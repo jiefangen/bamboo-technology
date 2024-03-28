@@ -1,4 +1,4 @@
-package org.panda.tech.core.version;
+package org.panda.tech.core.spec.version;
 
 import org.springframework.context.ApplicationContext;
 

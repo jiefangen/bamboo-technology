@@ -1,4 +1,4 @@
-package org.panda.tech.core.version;
+package org.panda.tech.core.spec.version;
 
 import org.panda.tech.core.util.supplier.ProfileSupplier;
 import org.springframework.beans.factory.annotation.Autowired;

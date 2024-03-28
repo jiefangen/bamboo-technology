@@ -1,4 +1,4 @@
-package org.panda.tech.core.version;
+package org.panda.tech.core.spec.version;
 
 /**
  * 版本号读取器
