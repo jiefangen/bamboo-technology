@@ -33,7 +33,7 @@ public class AuthoritiesAppExecutorImpl implements AuthoritiesAppExecutor {
 
     @Autowired
     private CommonProperties commonProperties;
-//    @Autowired
+    @Autowired
     private AuthServerClient authServerClient;
 
     @Override

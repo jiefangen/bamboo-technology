@@ -1,4 +1,4 @@
-package org.panda.tech.core.rpc.client.http;
+package org.panda.tech.core.rpc.client;
 
 import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.model.tuple.Binate;

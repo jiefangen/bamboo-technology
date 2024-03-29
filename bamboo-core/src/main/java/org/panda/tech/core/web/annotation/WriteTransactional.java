@@ -7,8 +7,6 @@ import java.lang.annotation.*;
 
 /**
  * 可写事务
- *
- * @author jianglei
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
