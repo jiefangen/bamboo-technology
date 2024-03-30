@@ -32,17 +32,22 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
         this.serializer = serializer;
     }
 
-    private String getInvokeUrl(String beanId, String methodName) {
+    private String getInvokeUrl(String beanId, String uri) {
         if (this.serverUrlRoot.endsWith(Strings.SLASH)) { // 兼容以斜杠结尾的服务根路径
             this.serverUrlRoot = this.serverUrlRoot.substring(0, this.serverUrlRoot.length() - Strings.SLASH.length());
         }
-        return this.serverUrlRoot + "/rpc/invoke/" + beanId + "/" + methodName;
+        if (!uri.startsWith(Strings.SLASH)) {
+            uri = Strings.SLASH + uri;
+        }
+        return this.serverUrlRoot + uri;
+//        return this.serverUrlRoot + "/rpc/invoke" + uri;
     }
 
     private Map<String, Object> getInvokeParams(Object[] args) throws Exception {
-        final Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params = new HashMap<>();
         if (args.length > 0) {
-            params.put("args", this.serializer.serialize(args));
+//            params.put("args", this.serializer.serialize(args[0]));
+            params.put("appServiceModel", args[0]);
         }
         return params;
     }
@@ -56,9 +61,9 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
      * @throws Exception
      *             如果响应中有错误
      */
-    private String requestContent(String url, Map<String, Object> params)
+    private String requestContent(String url, Object params)
             throws Exception {
-        Binate<Integer, String> response = request(url, params);
+        Binate<Integer, String> response = request(url, params, null);
         int statusCode = response.getLeft();
         String content = response.getRight();
         if (statusCode == HttpServletResponse.SC_OK) {
@@ -68,17 +73,17 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
     }
 
     @Override
-    public <T> T invoke(String beanId, String methodName, Object[] args, Class<T> resultType) throws Exception {
-        String url = getInvokeUrl(beanId, methodName);
+    public <T> T invoke(String beanId, String path, Object[] args, Class<T> resultType) throws Exception {
+        String url = getInvokeUrl(beanId, path);
         Map<String, Object> params = getInvokeParams(args);
-        String response = requestContent(url, params);
+        String response = requestContent(url, args[0]);
         return this.serializer.deserialize(response, resultType);
     }
 
     @Override
-    public <T> List<T> invoke4List(String beanId, String methodName, Object[] args, Class<T> resultElementType)
+    public <T> List<T> invoke4List(String beanId, String path, Object[] args, Class<T> resultElementType)
             throws Exception {
-        String url = getInvokeUrl(beanId, methodName);
+        String url = getInvokeUrl(beanId, path);
         Map<String, Object> params = getInvokeParams(args);
         String response = requestContent(url, params);
         return this.serializer.deserializeList(response, resultElementType);
@@ -93,17 +98,17 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
     }
 
     @Override
-    public <T> T invoke(String beanId, String methodName, Map<String, Object> args, Class<T> resultType) throws Exception {
-        String url = getInvokeUrl(beanId, methodName);
+    public <T> T invoke(String beanId, String path, Map<String, Object> args, Class<T> resultType) throws Exception {
+        String url = getInvokeUrl(beanId, path);
         Map<String, Object> params = getInvokeParams(args);
         String response = requestContent(url, params);
         return this.serializer.deserialize(response, resultType);
     }
 
     @Override
-    public <T> List<T> invoke4List(String beanId, String methodName, Map<String, Object> args, Class<T> resultElementType)
+    public <T> List<T> invoke4List(String beanId, String path, Map<String, Object> args, Class<T> resultElementType)
             throws Exception {
-        String url = getInvokeUrl(beanId, methodName);
+        String url = getInvokeUrl(beanId, path);
         Map<String, Object> params = getInvokeParams(args);
         String response = requestContent(url, params);
         return this.serializer.deserializeList(response, resultElementType);

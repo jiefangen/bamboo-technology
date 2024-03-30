@@ -27,9 +27,9 @@ public class ClientRequestSupport {
      * @throws Exception
      *             如果请求过程中有错误
      */
-    public Binate<Integer, String> request(String url, Map<String, Object> params)
+    public Binate<Integer, String> request(String url, Object params, Map<String, String> headers)
             throws Exception {
-        return HttpClientUtil.request(HttpMethod.resolve(this.httpMethod), url, params, null,
+        return HttpClientUtil.request(HttpMethod.resolve(this.httpMethod), url, params, headers,
                 Strings.ENCODING_UTF8);
     }
 

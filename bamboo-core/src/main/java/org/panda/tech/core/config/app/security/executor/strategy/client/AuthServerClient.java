@@ -1,32 +1,46 @@
 package org.panda.tech.core.config.app.security.executor.strategy.client;
 
 import org.panda.tech.core.config.app.security.model.AppServiceModel;
+import org.panda.tech.core.rpc.annotation.RpcClient;
+import org.panda.tech.core.rpc.annotation.RpcMethod;
 import org.panda.tech.core.web.config.WebConstants;
 import org.panda.tech.core.web.restful.RestfulResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * 认证鉴权中心
+ * 认证授权客户端实现
  *
  * @author fangen
  **/
-//@Component
-public interface AuthServerClient {
+@Component
+@RpcClient(serverRoot = "http://localhost:11006")
+public class AuthServerClient {
 
-    @PostMapping("/auth/login")
-    RestfulResult<String> login(@RequestParam("service") String service, @RequestParam("username") String username,
-                                @RequestParam("password") String password);
+    @RpcMethod("/auth/login")
+    public RestfulResult<String> login(@RequestParam("service") String service, @RequestParam("username") String username,
+                                       @RequestParam("password") String password) {
+        return null;
+    }
 
-    @PostMapping("/auth/login")
-    RestfulResult<String> loginByCredentials(@RequestHeader(WebConstants.HEADER_SECRET_KEY) String secretKey,
-                                             @RequestHeader(WebConstants.HEADER_AUTH_CREDENTIALS) String credentials,
-                                             @RequestParam("service") String service);
+    @RpcMethod("/auth/login")
+    public RestfulResult<String> loginByCredentials(@RequestHeader(WebConstants.HEADER_SECRET_KEY) String secretKey,
+                                                    @RequestHeader(WebConstants.HEADER_AUTH_CREDENTIALS) String credentials,
+                                                    @RequestParam("service") String service) {
+        return null;
+    }
 
-    @GetMapping(value = "/auth/access/validate")
-    RestfulResult validate(@RequestHeader(WebConstants.HEADER_AUTH_JWT) String authToken,
-                           @RequestParam("service") String service);
+    @RpcMethod("/auth/access/validate")
+    public RestfulResult<?> validate(@RequestHeader(WebConstants.HEADER_AUTH_JWT) String authToken,
+                                     @RequestParam("service") String service) {
+        return null;
+    }
 
-    @PostMapping("/auth/service/authorize")
-    RestfulResult authorize(@RequestBody AppServiceModel appServiceModel);
+    @RpcMethod("/auth/service/authorize")
+    public RestfulResult<?> authorize(@RequestBody AppServiceModel appServiceModel) {
+        return null;
+    }
 
 }

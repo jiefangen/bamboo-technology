@@ -27,6 +27,7 @@ public class RpcClientProcessor implements BeanPostProcessor {
             // String serviceName = rpcClientAnnotation.value();
             // RpcClientRegistry.register(bean, serviceName);
             System.out.println("-----" + beanName);
+            // Object targetProxy = BeanUtil.createProxy(target, new RpcInvocationHandler(rpcClientInvoker, target));
         }
         return bean;
     }

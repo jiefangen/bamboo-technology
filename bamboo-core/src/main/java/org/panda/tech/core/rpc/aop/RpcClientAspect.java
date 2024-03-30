@@ -1,15 +1,16 @@
-package org.panda.tech.core.rpc.proxy;
+package org.panda.tech.core.rpc.aop;
 
+import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.tech.core.rpc.annotation.RpcClient;
 import org.panda.tech.core.rpc.annotation.RpcMethod;
 import org.panda.tech.core.rpc.client.RpcClientInvoker;
 import org.panda.tech.core.rpc.serializer.RpcSerializer;
-import org.panda.tech.core.web.restful.RestfulResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,20 +35,23 @@ public class RpcClientAspect {
     @Around("rpcClientPointCut(org.panda.tech.core.rpc.annotation.RpcClient)")
     public Object aroundRpcClientMethods(ProceedingJoinPoint joinPoint) throws Throwable {
         Object target = joinPoint.getTarget();
-        Class<?> targetClass = joinPoint.getTarget().getClass();
+        Class<?> targetClass = target.getClass();
+        // RPC客户端解析
         RpcClient rpcClient = targetClass.getAnnotation(RpcClient.class);
-        String serverRoot = rpcClient.serverRoot();
-        RpcClientInvoker rpcClientInvoker = new RpcClientInvoker(serverRoot);
+        RpcClientInvoker rpcClientInvoker = new RpcClientInvoker(rpcClient.serverRoot());
         rpcClientInvoker.setSerializer(rpcSerializer);
-
+        // RPC方法解析
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
+        Object[] args = joinPoint.getArgs();
+        Class<?> returnType = methodSignature.getReturnType();
 
-
-//        Object targetProxy = BeanUtil.createProxy(target, new RpcInvocationHandler(rpcClientInvoker, target));
-
-        return RestfulResult.success("AOP");
+        String beanId = rpcClient.beanId();
+        if (StringUtils.isEmpty(beanId)) {
+            beanId = StringUtil.firstToLowerCase(targetClass.getSimpleName());
+        }
+        return rpcClientInvoker.invoke(beanId, rpcMethod.value(), args, returnType);
     }
 
 }

@@ -12,13 +12,15 @@ import java.lang.annotation.*;
 @Documented
 @Inherited
 public @interface RpcClient {
+
     /**
      * @return 服务根路径【必须】
      */
     String serverRoot();
 
-    String url() default Strings.EMPTY;
-
-    String path() default Strings.EMPTY;
+    /**
+     * @return Bean Id
+     */
+    String beanId() default Strings.EMPTY;
 
 }

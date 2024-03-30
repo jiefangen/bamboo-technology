@@ -13,8 +13,8 @@ public interface RpcClient {
      *
      * @param beanId
      *            Bean Id
-     * @param methodName
-     *            方法名
+     * @param path
+     *            资源路径
      * @param args
      *            参数集
      * @param resultType
@@ -23,15 +23,15 @@ public interface RpcClient {
      * @throws Exception
      *             如果执行过程中出现错误
      */
-    <T> T invoke(String beanId, String methodName, Object[] args, Class<T> resultType) throws Exception;
+    <T> T invoke(String beanId, String path, Object[] args, Class<T> resultType) throws Exception;
 
     /**
      * 执行指定RPC方法得到清单型结果
      *
      * @param beanId
      *            Bean Id
-     * @param methodName
-     *            方法名
+     * @param path
+     *            资源路径
      * @param args
      *            参数集
      * @param resultElementType
@@ -40,7 +40,7 @@ public interface RpcClient {
      * @throws Exception
      *             如果执行过程中出现错误
      */
-    <T> List<T> invoke4List(String beanId, String methodName, Object[] args, Class<T> resultElementType)
+    <T> List<T> invoke4List(String beanId, String path, Object[] args, Class<T> resultElementType)
             throws Exception;
 
     /**
@@ -48,8 +48,8 @@ public interface RpcClient {
      *
      * @param beanId
      *            Bean Id
-     * @param methodName
-     *            方法名
+     * @param path
+     *            资源路径
      * @param args
      *            有名称的参数映射集
      * @param resultType
@@ -58,15 +58,15 @@ public interface RpcClient {
      * @throws Exception
      *             如果执行过程中出现错误
      */
-    <T> T invoke(String beanId, String methodName, Map<String, Object> args, Class<T> resultType) throws Exception;
+    <T> T invoke(String beanId, String path, Map<String, Object> args, Class<T> resultType) throws Exception;
 
     /**
      * 执行指定RPC方法得到清单型结果
      * 
      * @param beanId
      *            Bean Id
-     * @param methodName
-     *            方法名
+     * @param path
+     *            资源路径
      * @param args
      *            有名称的参数映射集
      * @param resultElementType
@@ -75,7 +75,7 @@ public interface RpcClient {
      * @throws Exception
      *             如果执行过程中出现错误
      */
-    <T> List<T> invoke4List(String beanId, String methodName, Map<String, Object> args, Class<T> resultElementType)
+    <T> List<T> invoke4List(String beanId, String path, Map<String, Object> args, Class<T> resultElementType)
             throws Exception;
 
 }

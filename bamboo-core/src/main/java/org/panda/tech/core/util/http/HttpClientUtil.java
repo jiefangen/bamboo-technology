@@ -32,19 +32,22 @@ public class HttpClientUtil {
     private HttpClientUtil() {
     }
 
-    private static CloseableHttpResponse execute(HttpMethod method, String url, Map<String, Object> params,
+    private static CloseableHttpResponse execute(HttpMethod method, String url, Object params,
                                                  Map<String, String> headers, String encoding) throws Exception {
         HttpRequestBase request = null;
         switch (method) {
             case GET:
-                request = new HttpGet(NetUtil.mergeParams(url, params, encoding));
+                if (params instanceof Map) {
+                    request = new HttpGet(NetUtil.mergeParams(url, (Map) params, encoding));
+                } else {
+                    request = new HttpGet(NetUtil.mergeParams(url, null, encoding));
+                }
                 break;
             case POST:
                 HttpPost httpPost = new HttpPost(url);
                 if (params != null) {
-                    // 发送微信公众号模板消息需以下写法
                     httpPost.setEntity(new StringEntity(JsonUtil.toJson(params),
-                            ContentType.create(ContentType.TEXT_PLAIN.getMimeType(), encoding)));
+                            ContentType.create(ContentType.APPLICATION_JSON.getMimeType(), encoding)));
                 }
                 request = httpPost;
                 break;
@@ -78,7 +81,7 @@ public class HttpClientUtil {
         return null;
     }
 
-    public static Binary<Integer, String> request(HttpMethod method, String url, Map<String, Object> params,
+    public static Binary<Integer, String> request(HttpMethod method, String url, Object params,
                                                   Map<String, String> headers, String encoding) throws Exception {
         CloseableHttpResponse response = execute(method, url, params, headers, encoding);
         if (response != null) {
@@ -135,7 +138,7 @@ public class HttpClientUtil {
         }
     }
 
-    public static String commonRequest(HttpMethod method, String url, Map<String, Object> params,
+    public static String commonRequest(HttpMethod method, String url, Object params,
                                        Map<String, String> headers, String encoding) throws Exception {
         CloseableHttpResponse response = execute(method, url, params, headers, encoding);
         if (response != null) {
