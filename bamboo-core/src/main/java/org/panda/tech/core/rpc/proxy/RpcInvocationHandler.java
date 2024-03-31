@@ -17,7 +17,7 @@ public class RpcInvocationHandler extends DelegateInvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        clientProxy.invoke("", "", args, null);
+//        clientProxy.invoke("", "", args, null);
 
         return RestfulResult.success();
     }

@@ -12,20 +12,11 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface RpcMethod {
-
     /**
      * @return 资源路径【必须】
      */
-    String value();
+    String value() default Strings.EMPTY;
 
-    /**
-     * @return 资源全路径URL
-     */
-    String url() default Strings.EMPTY;
-
-    /**
-     * @return 请求方法
-     */
-    RequestMethod reqMethod() default RequestMethod.POST;
+    RequestMethod method() default RequestMethod.GET;
 
 }

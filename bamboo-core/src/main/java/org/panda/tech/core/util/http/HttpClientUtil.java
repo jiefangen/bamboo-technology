@@ -15,6 +15,7 @@ import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.jackson.JsonUtil;
 import org.panda.tech.core.web.util.NetUtil;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,15 +33,17 @@ public class HttpClientUtil {
     private HttpClientUtil() {
     }
 
-    private static CloseableHttpResponse execute(HttpMethod method, String url, Object params,
+    @SuppressWarnings("unchecked")
+    private static CloseableHttpResponse execute(RequestMethod method, String url, Object params,
                                                  Map<String, String> headers, String encoding) throws Exception {
         HttpRequestBase request = null;
         switch (method) {
             case GET:
                 if (params instanceof Map) {
-                    request = new HttpGet(NetUtil.mergeParams(url, (Map) params, encoding));
+                    Map<String, Object> paramsMap = (Map<String, Object>) params;
+                    request = new HttpGet(NetUtil.mergeParams(url, paramsMap, encoding));
                 } else {
-                    request = new HttpGet(NetUtil.mergeParams(url, null, encoding));
+                    request = new HttpGet(url);
                 }
                 break;
             case POST:
@@ -81,7 +84,7 @@ public class HttpClientUtil {
         return null;
     }
 
-    public static Binary<Integer, String> request(HttpMethod method, String url, Object params,
+    public static Binary<Integer, String> request(RequestMethod method, String url, Object params,
                                                   Map<String, String> headers, String encoding) throws Exception {
         CloseableHttpResponse response = execute(method, url, params, headers, encoding);
         if (response != null) {
@@ -101,18 +104,18 @@ public class HttpClientUtil {
 
     public static Binate<Integer, String> requestByGet(String url, Map<String, Object> params,
                                                        Map<String, String> headers) throws Exception {
-        return request(HttpMethod.GET, url, params, headers, Strings.ENCODING_UTF8);
+        return request(RequestMethod.GET, url, params, headers, Strings.ENCODING_UTF8);
     }
 
     public static Binate<Integer, String> requestByPost(String url, Map<String, Object> params,
             Map<String, String> headers) throws Exception {
-        return request(HttpMethod.POST, url, params, headers, Strings.ENCODING_UTF8);
+        return request(RequestMethod.POST, url, params, headers, Strings.ENCODING_UTF8);
     }
 
     public static void download(String url, Map<String, Object> params, Map<String, String> headers,
             BiConsumer<HttpEntity, Map<String, String>> consumer) throws IOException {
         try {
-            CloseableHttpResponse response = execute(HttpMethod.GET, url, params, headers, Strings.ENCODING_UTF8);
+            CloseableHttpResponse response = execute(RequestMethod.GET, url, params, headers, Strings.ENCODING_UTF8);
             if (response != null) {
                 StatusLine statusLine = response.getStatusLine();
                 if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
@@ -138,7 +141,7 @@ public class HttpClientUtil {
         }
     }
 
-    public static String commonRequest(HttpMethod method, String url, Object params,
+    public static String commonRequest(RequestMethod method, String url, Object params,
                                        Map<String, String> headers, String encoding) throws Exception {
         CloseableHttpResponse response = execute(method, url, params, headers, encoding);
         if (response != null) {
@@ -160,11 +163,11 @@ public class HttpClientUtil {
 
     public static String commonRequestByGet(String url, Map<String, Object> params, Map<String, String> headers)
             throws Exception {
-        return commonRequest(HttpMethod.GET, url, params, headers, Strings.ENCODING_UTF8);
+        return commonRequest(RequestMethod.GET, url, params, headers, Strings.ENCODING_UTF8);
     }
 
     public static String commonRequestByPost(String url, Map<String, Object> params, Map<String, String> headers)
             throws Exception {
-        return commonRequest(HttpMethod.POST, url, params, headers, Strings.ENCODING_UTF8);
+        return commonRequest(RequestMethod.POST, url, params, headers, Strings.ENCODING_UTF8);
     }
 }

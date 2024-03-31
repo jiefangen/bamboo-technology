@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 /**
  * RPC客户端切面
@@ -38,20 +39,25 @@ public class RpcClientAspect {
         Class<?> targetClass = target.getClass();
         // RPC客户端解析
         RpcClient rpcClient = targetClass.getAnnotation(RpcClient.class);
-        RpcClientInvoker rpcClientInvoker = new RpcClientInvoker(rpcClient.serverRoot());
+        RpcClientInvoker rpcClientInvoker = new RpcClientInvoker(rpcClient.value());
         rpcClientInvoker.setSerializer(rpcSerializer);
+        String beanId = rpcClient.beanId();
+        if (StringUtils.isEmpty(beanId)) {
+            // 后续用作RPC调用器代理缓存
+            beanId = StringUtil.firstToLowerCase(targetClass.getSimpleName());
+        }
+
         // RPC方法解析
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
+
+        // 获取方法的参数列表
+        Parameter[] parameters = method.getParameters();
+        // 获取方法参数值
         Object[] args = joinPoint.getArgs();
         Class<?> returnType = methodSignature.getReturnType();
-
-        String beanId = rpcClient.beanId();
-        if (StringUtils.isEmpty(beanId)) {
-            beanId = StringUtil.firstToLowerCase(targetClass.getSimpleName());
-        }
-        return rpcClientInvoker.invoke(beanId, rpcMethod.value(), args, returnType);
+        return rpcClientInvoker.invoke(rpcMethod.method(), rpcMethod.value(), parameters, args, returnType);
     }
 
 }

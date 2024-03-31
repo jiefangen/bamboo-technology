@@ -8,6 +8,7 @@ import org.panda.tech.core.web.restful.RestfulResult;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author fangen
  **/
 @Component
-@RpcClient(serverRoot = "http://localhost:11006")
+@RpcClient("http://localhost:11006")
 public class AuthServerClient {
 
     @RpcMethod("/auth/login")
@@ -38,7 +39,7 @@ public class AuthServerClient {
         return null;
     }
 
-    @RpcMethod("/auth/service/authorize")
+    @RpcMethod(value = "/auth/service/authorize", method = RequestMethod.POST)
     public RestfulResult<?> authorize(@RequestBody AppServiceModel appServiceModel) {
         return null;
     }
