@@ -39,7 +39,7 @@ public class RpcClientAspect {
         Class<?> targetClass = target.getClass();
         // RPC客户端解析
         RpcClient rpcClient = targetClass.getAnnotation(RpcClient.class);
-        RpcClientInvoker rpcClientInvoker = new RpcClientInvoker(rpcClient.value());
+        RpcClientInvoker rpcClientInvoker = new RpcClientInvoker(rpcClient.value(), rpcClient.internal());
         rpcClientInvoker.setSerializer(rpcSerializer);
         String beanId = rpcClient.beanId();
         if (StringUtils.isEmpty(beanId)) {

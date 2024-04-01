@@ -43,7 +43,7 @@ public interface RpcClient {
      * @throws Exception
      *             如果执行过程中出现错误
      */
-    <T> List<T> invoke4List(RequestMethod method, String path, Object[] args, Class<T> resultElementType)
+    <T> List<T> invoke4List(RequestMethod method, String path, Parameter[] parameters,  Object[] args, Class<T> resultElementType)
             throws Exception;
 
 }

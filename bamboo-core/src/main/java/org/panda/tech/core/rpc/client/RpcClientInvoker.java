@@ -23,12 +23,17 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
      */
     private String serverUrlRoot;
     /**
+     * 内部调用
+     */
+    private boolean internal;
+    /**
      * RPC序列化器
      */
     private RpcSerializer serializer;
 
-    public RpcClientInvoker(String serverUrlRoot) {
+    public RpcClientInvoker(String serverUrlRoot, boolean internal) {
         this.serverUrlRoot = serverUrlRoot;
+        this.internal = internal;
     }
 
     public void setSerializer(RpcSerializer serializer) {
@@ -49,8 +54,11 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
     private Map<String, Object> getInvokeParams(Parameter[] parameters, Object[] args) throws Exception {
         Map<String, Object> rpcParams = new HashMap<>();
         Map<String, Object> headers = new HashMap<>();
-        // RPC内部通信凭证
-        headers.put(WebConstants.HEADER_RPC_CREDENTIALS, "");
+        if (internal) {
+            // RPC内部通信凭证
+            headers.put(WebConstants.HEADER_RPC_CREDENTIALS, "");
+        }
+
         if (parameters.length > 0 && args.length > 0) {
             Map<String, Object> paramMap = new HashMap<>();
             for (int i = 0; i < parameters.length; i++) {
@@ -88,10 +96,10 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
     }
 
     @Override
-    public <T> List<T> invoke4List(RequestMethod method, String path, Object[] args, Class<T> resultElementType)
-            throws Exception {
+    public <T> List<T> invoke4List(RequestMethod method, String path, Parameter[] parameters,  Object[] args,
+                                   Class<T> resultElementType) throws Exception {
         String url = getInvokeUrl(path);
-        Map<String, Object> params = getInvokeParams(null, args);
+        Map<String, Object> params = getInvokeParams(parameters, args);
         String response = request(method, url, params);
         return this.serializer.deserializeList(response, resultElementType);
     }

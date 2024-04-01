@@ -19,4 +19,5 @@ public @interface RpcClient {
 
     String beanId() default Strings.EMPTY;
 
+    boolean internal() default true;
 }
