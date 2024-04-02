@@ -72,7 +72,7 @@ public class EncryptUtil {
             byte[] data = toBytes(source);
             MessageDigest digest = MessageDigest.getInstance(shaType);
             byte[] digestBytes = digest.digest(data);
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             for (int i = 0; i < digestBytes.length; i++) {
                 String shaHex = Integer.toHexString(digestBytes[i] & 0xFF);
                 if (shaHex.length() < 2) {

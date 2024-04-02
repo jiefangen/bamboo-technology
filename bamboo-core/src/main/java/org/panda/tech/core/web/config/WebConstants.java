@@ -63,15 +63,6 @@ public class WebConstants {
     public static final String HEADER_AUTH_CREDENTIALS = "Credentials";
 
     /**
-     * 头信息名：RPC业务类型
-     */
-    public static final String HEADER_RPC_TYPE = "Rpc-Type";
-    /**
-     * 头信息名：RPC内部通信凭证
-     */
-    public static final String HEADER_RPC_CREDENTIALS = "Rpc-Credentials";
-
-    /**
      * 默认的跳转目标参数
      */
     public static final String DEFAULT_REDIRECT_TARGET_URL_PARAMETER = "_next";

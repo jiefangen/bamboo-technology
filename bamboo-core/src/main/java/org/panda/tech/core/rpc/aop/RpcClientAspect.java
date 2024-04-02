@@ -35,8 +35,7 @@ public class RpcClientAspect {
 
     @Around("rpcClientPointCut(org.panda.tech.core.rpc.annotation.RpcClient)")
     public Object aroundRpcClientMethods(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object target = joinPoint.getTarget();
-        Class<?> targetClass = target.getClass();
+        Class<?> targetClass = joinPoint.getTarget().getClass();
         // RPC客户端解析
         RpcClient rpcClient = targetClass.getAnnotation(RpcClient.class);
         RpcClientInvoker rpcClientInvoker = new RpcClientInvoker(rpcClient.value(), rpcClient.internal());
@@ -46,6 +45,7 @@ public class RpcClientAspect {
             // 后续用作RPC调用器代理缓存
             beanId = StringUtil.firstToLowerCase(targetClass.getSimpleName());
         }
+        rpcClientInvoker.setBeanId(beanId);
 
         // RPC方法解析
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();

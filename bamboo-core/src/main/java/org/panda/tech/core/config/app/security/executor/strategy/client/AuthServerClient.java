@@ -17,29 +17,29 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author fangen
  **/
 @Component
-@RpcClient("http://localhost:11006")
+@RpcClient("http://localhost:11006/auth")
 public class AuthServerClient {
 
-    @RpcMethod("/auth/login")
+    @RpcMethod("/login")
     public RestfulResult<String> login(@RequestParam("service") String service, @RequestParam("username") String username,
                                        @RequestParam("password") String password) {
         return null;
     }
 
-    @RpcMethod("/auth/login")
+    @RpcMethod("/login")
     public RestfulResult<String> loginByCredentials(@RequestHeader(WebConstants.HEADER_SECRET_KEY) String secretKey,
                                                     @RequestHeader(WebConstants.HEADER_AUTH_CREDENTIALS) String credentials,
                                                     @RequestParam("service") String service) {
         return null;
     }
 
-    @RpcMethod("/auth/access/validate")
+    @RpcMethod("/access/validate")
     public RestfulResult<?> validate(@RequestHeader(WebConstants.HEADER_AUTH_JWT) String authToken,
                                      @RequestParam("service") String service) {
         return null;
     }
 
-    @RpcMethod(value = "/auth/service/authorize", method = RequestMethod.POST)
+    @RpcMethod(value = "/service/authorize", method = RequestMethod.POST)
     public RestfulResult<?> authorize(@RequestBody AppServiceModel appServiceModel) {
         return null;
     }

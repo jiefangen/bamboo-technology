@@ -1,8 +1,10 @@
 package org.panda.tech.core.rpc.client;
 
 import org.panda.bamboo.common.constant.basic.Strings;
+import org.panda.tech.core.crypto.aes.AesEncryptor;
+import org.panda.tech.core.crypto.sha.ShaEncryptor;
+import org.panda.tech.core.rpc.RpcConstants;
 import org.panda.tech.core.rpc.serializer.RpcSerializer;
-import org.panda.tech.core.web.config.WebConstants;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,7 +27,11 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
     /**
      * 内部调用
      */
-    private boolean internal;
+    private final boolean internal;
+    /**
+     * bean Id
+     */
+    private String beanId;
     /**
      * RPC序列化器
      */
@@ -34,6 +40,10 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
     public RpcClientInvoker(String serverUrlRoot, boolean internal) {
         this.serverUrlRoot = serverUrlRoot;
         this.internal = internal;
+    }
+
+    public void setBeanId(String beanId) {
+        this.beanId = beanId;
     }
 
     public void setSerializer(RpcSerializer serializer) {
@@ -47,18 +57,19 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
         if (!uri.startsWith(Strings.SLASH)) {
             uri = Strings.SLASH + uri;
         }
-        return this.serverUrlRoot + uri;
-//        return this.serverUrlRoot + "/rpc/invoke" + uri;
+        return this.serverUrlRoot + RpcConstants.URL_RPC_PREFIX + uri;
     }
 
     private Map<String, Object> getInvokeParams(Parameter[] parameters, Object[] args) throws Exception {
         Map<String, Object> rpcParams = new HashMap<>();
         Map<String, Object> headers = new HashMap<>();
-        if (internal) {
-            // RPC内部通信凭证
-            headers.put(WebConstants.HEADER_RPC_CREDENTIALS, "");
+        if (this.internal) { // RPC内部通信凭证
+            AesEncryptor aesEncryptor = new AesEncryptor();
+            String secretKey = aesEncryptor.encrypt(this.beanId, RpcConstants.CREDENTIALS_KEY);
+            ShaEncryptor shaEncryptor = new ShaEncryptor();
+            headers.put(RpcConstants.HEADER_RPC_TYPE, this.beanId);
+            headers.put(RpcConstants.HEADER_RPC_CREDENTIALS, shaEncryptor.encrypt(secretKey));
         }
-
         if (parameters.length > 0 && args.length > 0) {
             Map<String, Object> paramMap = new HashMap<>();
             for (int i = 0; i < parameters.length; i++) {

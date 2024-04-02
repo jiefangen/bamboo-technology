@@ -28,8 +28,7 @@ public class ClientRequestSupport {
     public String request(RequestMethod method, String url, Map<String, Object> rpcParams)
             throws Exception {
         Map<String, String> headers = (Map<String, String>) rpcParams.get(RPC_KEY_HEADERS);
-        Object params = rpcParams.get(RPC_KEY_PARAMS);
-        return HttpClientUtil.commonRequest(method, url, params, headers, Strings.ENCODING_UTF8);
+        return HttpClientUtil.commonRequest(method, url, rpcParams.get(RPC_KEY_PARAMS), headers, Strings.ENCODING_UTF8);
     }
 
 }
