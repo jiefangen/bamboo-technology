@@ -1,11 +1,11 @@
-package org.panda.tech.core.util;
+package org.panda.tech.core.util.http;
 
 import okhttp3.*;
 import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.jackson.JsonUtil;
-import org.panda.tech.core.spec.http.HttpRequestMethod;
 import org.panda.tech.core.web.util.NetUtil;
+import org.springframework.http.HttpMethod;
 
 import java.util.Map;
 import java.util.Objects;
@@ -27,7 +27,7 @@ public class OKHttpUtil {
     private OKHttpUtil() {
     }
 
-    private static Response execute(HttpRequestMethod method, String url, Map<String, Object> params,
+    private static Response execute(HttpMethod method, String url, Map<String, Object> params,
                                     Map<String, String> headerMap) throws Exception {
         Request.Builder requestBuilder = new Request.Builder();
         if (headerMap != null && !headerMap.isEmpty()) {
@@ -55,7 +55,7 @@ public class OKHttpUtil {
         return null;
     }
 
-    public static String request(HttpRequestMethod method, String url, Map<String, Object> params,
+    public static String request(HttpMethod method, String url, Map<String, Object> params,
                                     Map<String, String> headerMap) throws Exception {
         Response response = execute(method, url, params, headerMap);
         if (response != null) {
@@ -75,11 +75,11 @@ public class OKHttpUtil {
 
 
     public static String requestByGet(String url, Map<String, Object> params, Map<String, String> headers) throws Exception {
-        return request(HttpRequestMethod.GET, url, params, headers);
+        return request(HttpMethod.GET, url, params, headers);
     }
 
     public static String requestByPost(String url, Map<String, Object> params, Map<String, String> headers) throws Exception {
-        return request(HttpRequestMethod.POST, url, params, headers);
+        return request(HttpMethod.POST, url, params, headers);
     }
 
 }

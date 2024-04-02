@@ -1,10 +1,11 @@
-package org.panda.tech.core.web.util;
+package org.panda.tech.core.util.http;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.io.IOUtil;
+import org.panda.tech.core.web.util.NetUtil;
 
 import java.io.*;
 import java.net.URL;

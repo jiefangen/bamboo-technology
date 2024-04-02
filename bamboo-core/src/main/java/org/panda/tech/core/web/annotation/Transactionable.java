@@ -4,9 +4,6 @@ import java.lang.annotation.*;
 
 /**
  * 可具有事务的
- *
- * @author jianglei
- * 
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

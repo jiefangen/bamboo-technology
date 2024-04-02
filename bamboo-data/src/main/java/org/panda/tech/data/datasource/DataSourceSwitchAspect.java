@@ -16,8 +16,8 @@ import java.lang.reflect.Method;
  *
  * @author fangen
  **/
-@Aspect
 @Component
+@Aspect
 public class DataSourceSwitchAspect {
 
     @Pointcut("@annotation(org.panda.tech.data.common.annotation.DataSourceSwitch)")

@@ -9,9 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.lang.Nullable;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -451,6 +449,12 @@ public class BeanUtil {
             return (T) source;
         }
         return copyFieldsToNewInstance(source, targetClass);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T createProxy(T object, InvocationHandler handler) {
+        Class<?> clazz = object.getClass();
+        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), handler);
     }
 
 }

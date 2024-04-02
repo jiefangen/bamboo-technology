@@ -1,4 +1,4 @@
-package org.panda.tech.core.version;
+package org.panda.tech.core.spec.version;
 
 import org.apache.commons.lang3.StringUtils;
 import org.panda.bamboo.common.constant.basic.Strings;

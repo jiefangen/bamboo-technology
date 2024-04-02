@@ -1,0 +1,29 @@
+package org.panda.tech.core.rpc;
+
+/**
+ * RPC常量类
+ **/
+public class RpcConstants {
+
+    private RpcConstants() {
+    }
+
+    /**
+     * RPC通信凭证key
+     */
+    public static final String CREDENTIALS_KEY = "6N7BfKJCMDhhTF3ru86TuXeM4BXXTYBH";
+
+    /**
+     * 头信息名：RPC业务类型
+     */
+    public static final String HEADER_RPC_TYPE = "Rpc-Type";
+    /**
+     * 头信息名：RPC内部通信凭证
+     */
+    public static final String HEADER_RPC_CREDENTIALS = "Rpc-Credentials";
+    /**
+     * RPC调用前缀
+     */
+    public static final String URL_RPC_PREFIX = "/rpc/invoke";
+
+}

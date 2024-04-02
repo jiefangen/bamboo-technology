@@ -4,6 +4,7 @@ import org.panda.bamboo.common.constant.Commons;
 import org.panda.tech.core.config.app.security.AuthManagerStrategy;
 import org.panda.tech.core.config.app.security.executor.strategy.client.AuthServerClient;
 import org.panda.tech.core.web.restful.RestfulResult;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 独立服务认证授权验证策略
@@ -12,7 +13,7 @@ import org.panda.tech.core.web.restful.RestfulResult;
  **/
 public class IndependentAuthStrategy implements AuthManagerStrategy {
 
-//    @Autowired
+    @Autowired
     private AuthServerClient authServerClient;
 
     @Override

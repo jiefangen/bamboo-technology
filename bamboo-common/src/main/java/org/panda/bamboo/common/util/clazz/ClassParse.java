@@ -17,6 +17,7 @@ public class ClassParse {
     /**
      * 解析字符串为指定类型的对象
      */
+    @SuppressWarnings("unchecked")
     public static <T> T visit(String s,  Class<T> clazz) {
         if (clazz == null || StringUtils.isBlank(s)) {
             return null;

@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>bamboo-core</artifactId>
-    <version>${technology.version}</version>
+    <version>${bamboo-core.version}</version>
 
     <dependencies>
         <dependency>

@@ -27,9 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.util.WebUtils;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.ServletRequest;
+import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,6 +49,11 @@ public class WebHttpUtil {
     private static final String HEADER_UNKNOWN = "unknown";
 
     private WebHttpUtil() {
+    }
+
+    public static void forward(ServletRequest request, ServletResponse response, String url)
+            throws ServletException, IOException {
+        request.getRequestDispatcher(url).forward(request, response);
     }
 
     /**

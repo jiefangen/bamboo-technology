@@ -51,6 +51,7 @@ public class ClassDefault {
         OBJECT_DEFAULTS.put(Charset.class, StandardCharsets.UTF_8);
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T visit(Class<T> clazz, boolean nullObject) {
         if (clazz.isEnum()) {
             return clazz.getEnumConstants()[0];
@@ -77,6 +78,10 @@ public class ClassDefault {
             }
         }
         return result;
+    }
+
+    public static boolean isBasicDatatype(Class<?> clazz) {
+        return PRIMITIVE_DEFAULTS.get(clazz) != null || OBJECT_DEFAULTS.get(clazz) != null;
     }
 
 }
