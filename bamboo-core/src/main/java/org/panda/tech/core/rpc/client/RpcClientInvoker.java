@@ -19,7 +19,7 @@ import java.util.Map.Entry;
 /**
  * RPC客户端调用器
  */
-public class RpcClientInvoker extends ClientRequestSupport implements RpcClient {
+public class RpcClientInvoker extends ClientRequestSupport implements RpcClientReq {
     /**
      * 服务端URL根路径
      */

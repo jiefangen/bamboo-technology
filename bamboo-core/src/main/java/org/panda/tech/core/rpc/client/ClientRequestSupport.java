@@ -12,7 +12,6 @@ import java.util.Map;
 public class ClientRequestSupport {
 
     protected static final String RPC_KEY_HEADERS = "headers";
-
     protected static final String RPC_KEY_PARAMS = "params";
 
     /**

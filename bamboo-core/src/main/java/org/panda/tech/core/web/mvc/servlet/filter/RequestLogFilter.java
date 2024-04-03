@@ -7,7 +7,6 @@ import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.tech.core.web.mvc.servlet.http.BodyRepeatableRequestWrapper;
 import org.panda.tech.core.web.util.WebHttpUtil;
 import org.slf4j.Logger;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
 import javax.servlet.*;
@@ -15,12 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * 请求日志打印过滤器，执行的优先级最高
+ * 请求日志打印过滤器
  */
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@Order(0)
 public class RequestLogFilter implements Filter {
 
-    private Logger logger = LogUtil.getLogger(getClass());
+    private final Logger logger = LogUtil.getLogger(getClass());
 
     protected String[] urlPatterns;
 

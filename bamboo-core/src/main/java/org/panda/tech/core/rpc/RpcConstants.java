@@ -26,4 +26,10 @@ public class RpcConstants {
      */
     public static final String URL_RPC_PREFIX = "/rpc/invoke";
 
+    /**
+     * RPC无效凭证
+     */
+    public static final int INVALID_CREDENTIALS_CODE = 4100;
+    public static final String INVALID_CREDENTIALS = "Invalid rpc credentials.";
+
 }

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * RPC客户端
  */
-public interface RpcClient {
+public interface RpcClientReq {
 
     /**
      * 执行指定RPC方法

@@ -6,10 +6,13 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.panda.bamboo.common.util.clazz.BeanUtil;
 import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.tech.core.rpc.annotation.RpcClient;
 import org.panda.tech.core.rpc.annotation.RpcMethod;
 import org.panda.tech.core.rpc.client.RpcClientInvoker;
+import org.panda.tech.core.rpc.client.RpcClientReq;
+import org.panda.tech.core.rpc.proxy.RpcInvocationHandler;
 import org.panda.tech.core.rpc.serializer.RpcSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -57,7 +60,17 @@ public class RpcClientAspect {
         // 获取方法参数值
         Object[] args = joinPoint.getArgs();
         Class<?> returnType = methodSignature.getReturnType();
-        return rpcClientInvoker.invoke(rpcMethod.method(), rpcMethod.value(), parameters, args, returnType);
+
+
+        RpcClientReq target1 = new RpcClientInvoker(rpcClient.value(), rpcClient.internal());
+        // 代理方式测验
+        RpcClientReq targetProxy = BeanUtil.createProxy(target1, new RpcInvocationHandler(rpcClientInvoker));
+//        org.panda.tech.core.rpc.client.RpcClient targetProxy = (org.panda.tech.core.rpc.client.RpcClient) Proxy.newProxyInstance(
+//                org.panda.tech.core.rpc.client.RpcClient.class.getClassLoader(),
+//                new Class[]{org.panda.tech.core.rpc.client.RpcClient.class},
+//                new RpcInvocationHandler(rpcClientInvoker));
+
+        return targetProxy.invoke(rpcMethod.method(), rpcMethod.value(), parameters, args, returnType);
     }
 
 }
