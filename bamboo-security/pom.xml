@@ -16,7 +16,7 @@
         <dependency>
             <groupId>org.panda.tech</groupId>
             <artifactId>bamboo-core</artifactId>
-            <version>${technology.version}</version>
+            <version>${bamboo-core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

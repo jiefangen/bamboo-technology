@@ -6,16 +6,13 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.panda.bamboo.common.util.clazz.BeanUtil;
 import org.panda.bamboo.common.util.lang.StringUtil;
+import org.panda.tech.core.rpc.RpcConstants;
 import org.panda.tech.core.rpc.annotation.RpcClient;
 import org.panda.tech.core.rpc.annotation.RpcMethod;
-import org.panda.tech.core.rpc.client.RpcClientInvoker;
 import org.panda.tech.core.rpc.client.RpcClientReq;
-import org.panda.tech.core.rpc.proxy.RpcInvocationHandler;
-import org.panda.tech.core.rpc.serializer.RpcSerializer;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.panda.tech.core.rpc.exception.RpcInvokerException;
+import org.panda.tech.core.rpc.proxy.RpcClientProcessor;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -25,12 +22,14 @@ import java.lang.reflect.Parameter;
  *
  * @author fangen
  **/
-@Component
 @Aspect
 public class RpcClientAspect {
 
-    @Autowired
-    private RpcSerializer rpcSerializer;
+    private final RpcClientProcessor rpcClientProcessor;
+
+    public RpcClientAspect(RpcClientProcessor rpcClientProcessor) {
+        this.rpcClientProcessor = rpcClientProcessor;
+    }
 
     @Pointcut("@within(rpcClient) || @annotation(rpcClient)")
     public void rpcClientPointCut(RpcClient rpcClient) {
@@ -41,34 +40,24 @@ public class RpcClientAspect {
         Class<?> targetClass = joinPoint.getTarget().getClass();
         // RPC客户端解析
         RpcClient rpcClient = targetClass.getAnnotation(RpcClient.class);
-        RpcClientInvoker rpcClientInvoker = new RpcClientInvoker(rpcClient.value(), rpcClient.internal());
-        rpcClientInvoker.setSerializer(rpcSerializer);
         String beanId = rpcClient.beanId();
         if (StringUtils.isEmpty(beanId)) {
-            // 后续用作RPC调用器代理缓存
             beanId = StringUtil.firstToLowerCase(targetClass.getSimpleName());
         }
-        rpcClientInvoker.setBeanId(beanId);
+        RpcClientReq targetProxy = rpcClientProcessor.getRpcProxyClients().get(beanId);
+        if (targetProxy == null) {
+            throw new RpcInvokerException(RpcConstants.EXC_RPC_ILLEGAL_BEAN);
+        }
 
         // RPC方法解析
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
-
         // 获取方法的参数列表
         Parameter[] parameters = method.getParameters();
         // 获取方法参数值
         Object[] args = joinPoint.getArgs();
         Class<?> returnType = methodSignature.getReturnType();
-
-
-        RpcClientReq target1 = new RpcClientInvoker(rpcClient.value(), rpcClient.internal());
-        // 代理方式测验
-        RpcClientReq targetProxy = BeanUtil.createProxy(target1, new RpcInvocationHandler(rpcClientInvoker));
-//        org.panda.tech.core.rpc.client.RpcClient targetProxy = (org.panda.tech.core.rpc.client.RpcClient) Proxy.newProxyInstance(
-//                org.panda.tech.core.rpc.client.RpcClient.class.getClassLoader(),
-//                new Class[]{org.panda.tech.core.rpc.client.RpcClient.class},
-//                new RpcInvocationHandler(rpcClientInvoker));
 
         return targetProxy.invoke(rpcMethod.method(), rpcMethod.value(), parameters, args, returnType);
     }

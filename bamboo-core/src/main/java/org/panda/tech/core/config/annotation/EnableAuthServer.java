@@ -1,6 +1,6 @@
 package org.panda.tech.core.config.annotation;
 
-import org.panda.tech.core.config.app.security.config.AppSecurityAutoConfiguration;
+import org.panda.tech.core.config.security.config.AppSecurityAutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;

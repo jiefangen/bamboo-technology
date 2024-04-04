@@ -1,5 +1,6 @@
 package org.panda.tech.core.rpc.client;
 
+import org.panda.tech.core.rpc.serializer.RpcSerializer;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.lang.reflect.Parameter;
@@ -11,12 +12,17 @@ import java.util.List;
 public interface RpcClientReq {
 
     /**
+     * 设置RPC序列化器
+     */
+    void setSerializer(RpcSerializer serializer);
+
+    /**
      * 执行指定RPC方法
      *
-     * @param beanId
-     *            Bean Id
      * @param path
      *            资源路径
+     * @param parameters
+     *            参数方法属性
      * @param args
      *            参数集
      * @param resultType
@@ -31,8 +37,8 @@ public interface RpcClientReq {
     /**
      * 执行指定RPC方法得到清单型结果
      *
-     * @param beanId
-     *            Bean Id
+     * @param parameters
+     *            参数方法属性
      * @param path
      *            资源路径
      * @param args

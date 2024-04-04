@@ -31,21 +31,19 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClientR
     /**
      * bean Id
      */
-    private String beanId;
+    private final String beanId;
     /**
      * RPC序列化器
      */
     private RpcSerializer serializer;
 
-    public RpcClientInvoker(String serverUrlRoot, boolean internal) {
+    public RpcClientInvoker(String serverUrlRoot, String beanId, boolean internal) {
         this.serverUrlRoot = serverUrlRoot;
+        this.beanId = beanId;
         this.internal = internal;
     }
 
-    public void setBeanId(String beanId) {
-        this.beanId = beanId;
-    }
-
+    @Override
     public void setSerializer(RpcSerializer serializer) {
         this.serializer = serializer;
     }

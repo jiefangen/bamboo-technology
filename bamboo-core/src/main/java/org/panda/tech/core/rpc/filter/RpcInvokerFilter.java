@@ -44,11 +44,11 @@ public class RpcInvokerFilter implements Filter {
                     RestfulResult<?> failureResult = RestfulResult.failure(RpcConstants.INVALID_CREDENTIALS_CODE,
                             RpcConstants.INVALID_CREDENTIALS);
                     WebHttpUtil.buildJsonResponse((HttpServletResponse) resp, failureResult);
-                    return;
                 }
+                return; // RPC调用直接放行
             }
         }
-        // 不是RPC调用直接放行，进行后续相关拦截器处理
+        // 不是RPC调用进行后续相关过滤拦截处理
         chain.doFilter(req, resp);
     }
 

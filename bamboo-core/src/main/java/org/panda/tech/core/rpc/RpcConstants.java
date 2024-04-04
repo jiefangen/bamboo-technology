@@ -30,6 +30,14 @@ public class RpcConstants {
      * RPC无效凭证
      */
     public static final int INVALID_CREDENTIALS_CODE = 4100;
-    public static final String INVALID_CREDENTIALS = "Invalid rpc credentials.";
+    public static final String INVALID_CREDENTIALS = "Invalid rpc credentials";
+
+    /**
+     * RPC调用异常
+     */
+    public static final int EXC_RPC_INVOKER_CODE = 5200;
+    public static final String EXC_RPC_INVOKER = "Rpc invoker failure";
+
+    public static final String EXC_RPC_ILLEGAL_BEAN = "Illegal Rpc client beanId";
 
 }
