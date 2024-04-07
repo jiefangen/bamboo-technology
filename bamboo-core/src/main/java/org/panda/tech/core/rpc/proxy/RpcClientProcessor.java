@@ -2,6 +2,7 @@ package org.panda.tech.core.rpc.proxy;
 
 import org.apache.commons.lang3.StringUtils;
 import org.panda.bamboo.common.util.clazz.BeanUtil;
+import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.tech.core.rpc.annotation.RpcClient;
 import org.panda.tech.core.rpc.aop.RpcClientAspect;
 import org.panda.tech.core.rpc.client.RpcClientInvoker;
@@ -47,10 +48,8 @@ public class RpcClientProcessor implements BeanPostProcessor {
             Class<?> targetClass = bean.getClass();
             // RPC客户端解析
             RpcClient rpcClient = targetClass.getAnnotation(RpcClient.class);
-            String beanId = rpcClient.beanId();
-            if (StringUtils.isEmpty(beanId)) { // RPC调用器代理缓存key
-                beanId = beanName;
-            }
+            String beanId = StringUtils.isEmpty(rpcClient.beanId()) ?
+                    StringUtil.firstToLowerCase(targetClass.getSimpleName()) : rpcClient.beanId();
             RpcClientReq rpcClientInvoker = new RpcClientInvoker(rpcClient.value(), beanId, rpcClient.internal());
             rpcClientInvoker.setSerializer(rpcSerializer);
             RpcInvocationHandler rpcInvocationHandler = new RpcInvocationHandler(rpcClientInvoker);

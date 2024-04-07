@@ -40,10 +40,8 @@ public class RpcClientAspect {
         Class<?> targetClass = joinPoint.getTarget().getClass();
         // RPC客户端解析
         RpcClient rpcClient = targetClass.getAnnotation(RpcClient.class);
-        String beanId = rpcClient.beanId();
-        if (StringUtils.isEmpty(beanId)) {
-            beanId = StringUtil.firstToLowerCase(targetClass.getSimpleName());
-        }
+        String beanId = StringUtils.isEmpty(rpcClient.beanId()) ?
+                StringUtil.firstToLowerCase(targetClass.getSimpleName()) : rpcClient.beanId();
         RpcClientReq targetProxy = rpcClientProcessor.getRpcProxyClients().get(beanId);
         if (targetProxy == null) {
             throw new RpcInvokerException(RpcConstants.EXC_RPC_ILLEGAL_BEAN);

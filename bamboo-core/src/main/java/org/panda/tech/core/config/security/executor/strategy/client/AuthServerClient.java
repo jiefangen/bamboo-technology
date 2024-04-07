@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AuthServerClient {
 
     @RpcMethod("/login")
-    public RestfulResult<String> login(@RequestParam("service") String service, @RequestParam("username") String username,
+    public RestfulResult<String> login(@RequestParam("service") String service,
+                                       @RequestParam("username") String username,
                                        @RequestParam("password") String password) {
         return null;
     }

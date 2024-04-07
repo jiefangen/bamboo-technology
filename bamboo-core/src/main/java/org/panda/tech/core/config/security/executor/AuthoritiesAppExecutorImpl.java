@@ -33,7 +33,7 @@ public class AuthoritiesAppExecutorImpl implements AuthoritiesAppExecutor {
 
     @Autowired
     private CommonProperties commonProperties;
-    @Autowired
+    @Autowired(required = false)
     private AuthServerClient authServerClient;
 
     @Override
@@ -57,7 +57,8 @@ public class AuthoritiesAppExecutorImpl implements AuthoritiesAppExecutor {
             permissions.add(permission);
         }
         appServiceModel.setPermissions(permissions);
-        try {RestfulResult<?> result = authServerClient.authorize(appServiceModel);
+        try {
+            RestfulResult<?> result = authServerClient.authorize(appServiceModel);
             LogUtil.info(getClass(), "{} service permissions loading completed, authorize result: {}", appName,
                     JsonUtil.toJson(result));
         } catch (Exception e) {
