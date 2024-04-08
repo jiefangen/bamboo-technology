@@ -25,7 +25,7 @@
         <dependency>
             <groupId>org.panda.tech</groupId>
             <artifactId>bamboo-core</artifactId>
-            <version>${technology.version}</version>
+            <version>${bamboo-core.version}</version>
         </dependency>
         <!-- 消息队列rocketmq，客户端4.9.3版本兼容4.x版本的服务端 -->
         <dependency>

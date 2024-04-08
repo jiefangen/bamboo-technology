@@ -1,7 +1,7 @@
 package org.panda.tech.core.rpc.annotation;
 
 import org.panda.bamboo.common.constant.basic.Strings;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.http.HttpMethod;
 
 import java.lang.annotation.*;
 
@@ -17,6 +17,9 @@ public @interface RpcMethod {
      */
     String value() default Strings.EMPTY;
 
-    RequestMethod method() default RequestMethod.GET;
+    /**
+     * @return 请求方法
+     */
+    HttpMethod method() default HttpMethod.POST;
 
 }

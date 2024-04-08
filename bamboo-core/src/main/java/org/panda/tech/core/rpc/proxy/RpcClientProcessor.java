@@ -1,35 +1,72 @@
 package org.panda.tech.core.rpc.proxy;
 
+import org.apache.commons.lang3.StringUtils;
+import org.panda.bamboo.common.util.clazz.BeanUtil;
+import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.tech.core.rpc.annotation.RpcClient;
+import org.panda.tech.core.rpc.aop.RpcClientAspect;
+import org.panda.tech.core.rpc.client.RpcClientInvoker;
+import org.panda.tech.core.rpc.client.RpcClientReq;
+import org.panda.tech.core.rpc.filter.RpcInvokeInterceptor;
+import org.panda.tech.core.rpc.serializer.JsonRpcSerializer;
+import org.panda.tech.core.rpc.serializer.RpcSerializer;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Import;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * RPC接口代理初始化加载
+ * RPC接口代理预加载
  *
  * @author fangen
  **/
-@Component
+@Import({JsonRpcSerializer.class, RpcClientAspect.class})
 public class RpcClientProcessor implements BeanPostProcessor {
 
-    private final Map<String, Object> rpcClientBeans = new HashMap<>();
+    // RPC代理客户端容器
+    private final Map<String, RpcClientReq> rpcProxyClients = new HashMap<>();
+
+    @Autowired(required = false)
+    private RpcInvokeInterceptor interceptor;
+
+    private final RpcSerializer rpcSerializer;
+
+    public RpcClientProcessor(RpcSerializer rpcSerializer) {
+        this.rpcSerializer = rpcSerializer;
+    }
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         if (bean.getClass().isAnnotationPresent(RpcClient.class)) {
-            // 在这里执行你想要的逻辑，例如注册到 RPC 客户端
-            // 例如：
-            // RpcClient rpcClientAnnotation = bean.getClass().getAnnotation(RpcClient.class);
-            // String serviceName = rpcClientAnnotation.value();
-            // RpcClientRegistry.register(bean, serviceName);
-            System.out.println("-----" + beanName);
-            // Object targetProxy = BeanUtil.createProxy(target, new RpcInvocationHandler(rpcClientInvoker, target));
+            Class<?> targetClass = bean.getClass();
+            // RPC客户端解析
+            RpcClient rpcClient = targetClass.getAnnotation(RpcClient.class);
+            String beanId = StringUtils.isEmpty(rpcClient.beanId()) ?
+                    StringUtil.firstToLowerCase(targetClass.getSimpleName()) : rpcClient.beanId();
+            RpcClientReq rpcClientInvoker = new RpcClientInvoker(rpcClient.value(), beanId, rpcClient.internal());
+            rpcClientInvoker.setCommMode(rpcClient.mode());
+            rpcClientInvoker.setSerializer(rpcSerializer);
+            RpcInvocationHandler rpcInvocationHandler = new RpcInvocationHandler(rpcClientInvoker);
+            rpcInvocationHandler.setInterceptor(this.interceptor);
+            rpcInvocationHandler.setBeanId(beanId);
+            RpcClientReq targetProxy = BeanUtil.createProxy(rpcClientInvoker, rpcInvocationHandler);
+            if (!rpcProxyClients.containsKey(beanId)) {
+                rpcProxyClients.put(beanId, targetProxy);
+            }
         }
         return bean;
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
+
+    public Map<String, RpcClientReq> getRpcProxyClients() {
+        return rpcProxyClients;
     }
 
 }

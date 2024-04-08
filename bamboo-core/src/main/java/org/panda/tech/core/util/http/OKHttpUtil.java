@@ -27,7 +27,8 @@ public class OKHttpUtil {
     private OKHttpUtil() {
     }
 
-    private static Response execute(HttpMethod method, String url, Map<String, Object> params,
+    @SuppressWarnings("unchecked")
+    private static Response execute(HttpMethod method, String url, Object params,
                                     Map<String, String> headerMap) throws Exception {
         Request.Builder requestBuilder = new Request.Builder();
         if (headerMap != null && !headerMap.isEmpty()) {
@@ -38,8 +39,11 @@ public class OKHttpUtil {
         Request request = null;
         switch (method) {
             case GET:
-                if (params != null && !params.isEmpty()) {
-                    url = NetUtil.mergeParams(url, params, Strings.ENCODING_UTF8);
+                if (params instanceof Map) {
+                    Map<String, Object> paramsMap = (Map<String, Object>) params;
+                    if (!paramsMap.isEmpty()) {
+                        url = NetUtil.mergeParams(url, paramsMap, Strings.ENCODING_UTF8);
+                    }
                 }
                 request = requestBuilder.url(url).get().build();
                 break;
@@ -49,14 +53,13 @@ public class OKHttpUtil {
                 break;
         }
         if (request != null) {
-            Response response = OK_HTTP_CLIENT.newCall(request).execute();
-            return response;
+            return OK_HTTP_CLIENT.newCall(request).execute();
         }
         return null;
     }
 
-    public static String request(HttpMethod method, String url, Map<String, Object> params,
-                                    Map<String, String> headerMap) throws Exception {
+    public static String request(HttpMethod method, String url, Object params, Map<String, String> headerMap)
+            throws Exception {
         Response response = execute(method, url, params, headerMap);
         if (response != null) {
             try {
@@ -78,7 +81,7 @@ public class OKHttpUtil {
         return request(HttpMethod.GET, url, params, headers);
     }
 
-    public static String requestByPost(String url, Map<String, Object> params, Map<String, String> headers) throws Exception {
+    public static String requestByPost(String url, Object params, Map<String, String> headers) throws Exception {
         return request(HttpMethod.POST, url, params, headers);
     }
 

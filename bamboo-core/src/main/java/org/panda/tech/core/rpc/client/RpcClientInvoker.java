@@ -3,23 +3,26 @@ package org.panda.tech.core.rpc.client;
 import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.tech.core.crypto.aes.AesEncryptor;
 import org.panda.tech.core.crypto.sha.ShaEncryptor;
-import org.panda.tech.core.rpc.RpcConstants;
-import org.panda.tech.core.rpc.serializer.RpcSerializer;
+import org.panda.tech.core.rpc.constant.RpcConstants;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * RPC客户端调用器
  */
-public class RpcClientInvoker extends ClientRequestSupport implements RpcClient {
+public class RpcClientInvoker extends ClientRequestSupport implements RpcClientReq {
+
+    private static final String RPC_KEY_HEADERS = "headers";
+    private static final String RPC_KEY_PARAMS = "params";
+    private static final String RPC_KEY_BODY_PARAMS = "bodyParams";
+
     /**
      * 服务端URL根路径
      */
@@ -31,23 +34,12 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
     /**
      * bean Id
      */
-    private String beanId;
-    /**
-     * RPC序列化器
-     */
-    private RpcSerializer serializer;
+    private final String beanId;
 
-    public RpcClientInvoker(String serverUrlRoot, boolean internal) {
+    public RpcClientInvoker(String serverUrlRoot, String beanId, boolean internal) {
         this.serverUrlRoot = serverUrlRoot;
-        this.internal = internal;
-    }
-
-    public void setBeanId(String beanId) {
         this.beanId = beanId;
-    }
-
-    public void setSerializer(RpcSerializer serializer) {
-        this.serializer = serializer;
+        this.internal = internal;
     }
 
     private String getInvokeUrl(String uri) {
@@ -79,11 +71,9 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
                     String headerName = requestHeaderAnnotation.value();
                     headers.put(headerName, args[i]);
                 }
-                // 针对POST请求
                 if (parameter.isAnnotationPresent(RequestBody.class)) {
-                    rpcParams.put(RPC_KEY_PARAMS, args[i]);
+                    rpcParams.put(RPC_KEY_BODY_PARAMS, args[i]);
                 }
-                // 针对GET请求参数
                 if (parameter.isAnnotationPresent(RequestParam.class)) {
                     RequestParam requestHeaderAnnotation = parameter.getAnnotation(RequestParam.class);
                     String paramName = requestHeaderAnnotation.value();
@@ -98,29 +88,22 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClient 
         return rpcParams;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public <T> T invoke(RequestMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType)
+    public <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType)
             throws Exception {
         Map<String, Object> rpcParams = getInvokeParams(parameters, args);
-        String response = request(method, getInvokeUrl(path), rpcParams);
+        Map<String, Object> params = (Map<String, Object>) rpcParams.get(RPC_KEY_PARAMS);
+        Map<String, String> headers = (Map<String, String>) rpcParams.get(RPC_KEY_HEADERS);
+        String response = request(method, getInvokeUrl(path), params, rpcParams.get(RPC_KEY_BODY_PARAMS), headers);
         return this.serializer.deserialize(response, resultType);
     }
 
     @Override
-    public <T> List<T> invoke4List(RequestMethod method, String path, Parameter[] parameters,  Object[] args,
+    public <T> List<T> invoke4List(HttpMethod method, String path, Parameter[] parameters, Object[] args,
                                    Class<T> resultElementType) throws Exception {
-        String url = getInvokeUrl(path);
-        Map<String, Object> params = getInvokeParams(parameters, args);
-        String response = request(method, url, params);
+        String response = (String) invoke(method, path, parameters, args, resultElementType);
         return this.serializer.deserializeList(response, resultElementType);
-    }
-
-    private Map<String, Object> getInvokeParams(Map<String, Object> args) throws Exception {
-        Map<String, Object> params = new HashMap<>();
-        for (Entry<String, Object> entry : args.entrySet()) {
-            params.put(entry.getKey(), this.serializer.serialize(entry.getValue()));
-        }
-        return params;
     }
 
 }
