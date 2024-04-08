@@ -1,4 +1,4 @@
-package org.panda.tech.core.rpc;
+package org.panda.tech.core.rpc.constant;
 
 /**
  * RPC常量类
@@ -37,7 +37,13 @@ public class RpcConstants {
      */
     public static final int EXC_RPC_INVOKER_CODE = 5200;
     public static final String EXC_RPC_INVOKER = "Rpc invoker failure";
-
+    /**
+     * 无效的RPC客户端ID
+     */
     public static final String EXC_RPC_ILLEGAL_BEAN = "Illegal Rpc client beanId";
+    /**
+     * 未初始化配置RestTemplate
+     */
+    public static final String EXC_RPC_NOT_REST = "Configuring RestTemplate not initialized";
 
 }

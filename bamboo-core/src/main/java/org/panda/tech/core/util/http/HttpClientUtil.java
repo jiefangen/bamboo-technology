@@ -1,6 +1,9 @@
 package org.panda.tech.core.util.http;
 
-import org.apache.http.*;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
@@ -10,12 +13,10 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.model.tuple.Binary;
-import org.panda.bamboo.common.model.tuple.Binate;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.jackson.JsonUtil;
 import org.panda.tech.core.web.util.NetUtil;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,30 +35,28 @@ public class HttpClientUtil {
     }
 
     @SuppressWarnings("unchecked")
-    private static CloseableHttpResponse execute(RequestMethod method, String url, Object params,
+    private static CloseableHttpResponse execute(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
                                                  Map<String, String> headers, String encoding) throws Exception {
         HttpRequestBase request = null;
+        if (params != null && !params.isEmpty()) {
+            url = NetUtil.mergeParams(url, params, Strings.ENCODING_UTF8);
+        }
         switch (method) {
             case GET:
-                if (params instanceof Map) {
-                    Map<String, Object> paramsMap = (Map<String, Object>) params;
-                    request = new HttpGet(NetUtil.mergeParams(url, paramsMap, encoding));
-                } else {
-                    request = new HttpGet(url);
-                }
+                request = new HttpGet(url);
                 break;
             case POST:
                 HttpPost httpPost = new HttpPost(url);
-                if (params != null) {
-                    httpPost.setEntity(new StringEntity(JsonUtil.toJson(params),
+                if (bodyParams != null) {
+                    httpPost.setEntity(new StringEntity(JsonUtil.toJson(bodyParams),
                             ContentType.create(ContentType.APPLICATION_JSON.getMimeType(), encoding)));
                 }
                 request = httpPost;
                 break;
             case PUT:
                 HttpPut httpPut = new HttpPut(url);
-                if (params != null) {
-                    httpPut.setEntity(new StringEntity(JsonUtil.toJson(params),
+                if (bodyParams != null) {
+                    httpPut.setEntity(new StringEntity(JsonUtil.toJson(bodyParams),
                             ContentType.create(ContentType.APPLICATION_JSON.getMimeType(), encoding)));
                 }
                 request = httpPut;
@@ -84,9 +83,9 @@ public class HttpClientUtil {
         return null;
     }
 
-    public static Binary<Integer, String> request(RequestMethod method, String url, Object params,
+    public static Binary<Integer, String> request(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
                                                   Map<String, String> headers, String encoding) throws Exception {
-        CloseableHttpResponse response = execute(method, url, params, headers, encoding);
+        CloseableHttpResponse response = execute(method, url, params, bodyParams, headers, encoding);
         if (response != null) {
             try {
                 int statusCode = response.getStatusLine().getStatusCode();
@@ -102,20 +101,11 @@ public class HttpClientUtil {
         return null;
     }
 
-    public static Binate<Integer, String> requestByGet(String url, Map<String, Object> params,
-                                                       Map<String, String> headers) throws Exception {
-        return request(RequestMethod.GET, url, params, headers, Strings.ENCODING_UTF8);
-    }
-
-    public static Binate<Integer, String> requestByPost(String url, Map<String, Object> params,
-            Map<String, String> headers) throws Exception {
-        return request(RequestMethod.POST, url, params, headers, Strings.ENCODING_UTF8);
-    }
-
     public static void download(String url, Map<String, Object> params, Map<String, String> headers,
             BiConsumer<HttpEntity, Map<String, String>> consumer) throws IOException {
         try {
-            CloseableHttpResponse response = execute(RequestMethod.GET, url, params, headers, Strings.ENCODING_UTF8);
+            CloseableHttpResponse response = execute(HttpMethod.GET, url, params, null, headers,
+                    Strings.ENCODING_UTF8);
             if (response != null) {
                 StatusLine statusLine = response.getStatusLine();
                 if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
@@ -141,13 +131,13 @@ public class HttpClientUtil {
         }
     }
 
-    public static String commonRequest(RequestMethod method, String url, Object params,
-                                       Map<String, String> headers, String encoding) throws Exception {
-        CloseableHttpResponse response = execute(method, url, params, headers, encoding);
+    public static String commonRequest(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
+                                       Map<String, String> headers) throws Exception {
+        CloseableHttpResponse response = execute(method, url, params, bodyParams, headers, Strings.ENCODING_UTF8);
         if (response != null) {
             try {
                 int statusCode = response.getStatusLine().getStatusCode();
-                String content = EntityUtils.toString(response.getEntity(), encoding);
+                String content = EntityUtils.toString(response.getEntity(), Strings.ENCODING_UTF8);
                 if (statusCode != HttpStatus.SC_OK) {
                     LogUtil.error(HttpClientUtil.class, content);
                 }
@@ -161,13 +151,13 @@ public class HttpClientUtil {
         return null;
     }
 
-    public static String commonRequestByGet(String url, Map<String, Object> params, Map<String, String> headers)
+    public static String requestByGet(String url, Map<String, Object> params, Map<String, String> headers)
             throws Exception {
-        return commonRequest(RequestMethod.GET, url, params, headers, Strings.ENCODING_UTF8);
+        return commonRequest(HttpMethod.GET, url, params,null, headers);
     }
 
-    public static String commonRequestByPost(String url, Map<String, Object> params, Map<String, String> headers)
+    public static String requestByPost(String url, Object bodyParams, Map<String, String> headers)
             throws Exception {
-        return commonRequest(RequestMethod.POST, url, params, headers, Strings.ENCODING_UTF8);
+        return commonRequest(HttpMethod.POST, url, null, bodyParams, headers);
     }
 }

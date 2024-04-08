@@ -1,7 +1,8 @@
 package org.panda.tech.core.rpc.client;
 
+import org.panda.tech.core.rpc.constant.enums.CommMode;
 import org.panda.tech.core.rpc.serializer.RpcSerializer;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.http.HttpMethod;
 
 import java.lang.reflect.Parameter;
 import java.util.List;
@@ -10,11 +11,6 @@ import java.util.List;
  * RPC客户端
  */
 public interface RpcClientReq {
-
-    /**
-     * 设置RPC序列化器
-     */
-    void setSerializer(RpcSerializer serializer);
 
     /**
      * 执行指定RPC方法
@@ -31,7 +27,7 @@ public interface RpcClientReq {
      * @throws Exception
      *             如果执行过程中出现错误
      */
-    <T> T invoke(RequestMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType)
+    <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType)
             throws Exception;
 
     /**
@@ -49,7 +45,17 @@ public interface RpcClientReq {
      * @throws Exception
      *             如果执行过程中出现错误
      */
-    <T> List<T> invoke4List(RequestMethod method, String path, Parameter[] parameters,  Object[] args, Class<T> resultElementType)
+    <T> List<T> invoke4List(HttpMethod method, String path, Parameter[] parameters,  Object[] args, Class<T> resultElementType)
             throws Exception;
+
+    /**
+     * 设置通信模式
+     */
+    void setCommMode(CommMode commMode);
+
+    /**
+     * 设置RPC序列化器
+     */
+    void setSerializer(RpcSerializer serializer);
 
 }

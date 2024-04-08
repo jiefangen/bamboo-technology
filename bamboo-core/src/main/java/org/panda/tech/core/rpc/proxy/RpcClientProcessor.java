@@ -14,7 +14,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Import;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,9 +32,6 @@ public class RpcClientProcessor implements BeanPostProcessor {
     @Autowired(required = false)
     private RpcInvokeInterceptor interceptor;
 
-    @Autowired(required = false)
-    private RestTemplate restTemplate;
-
     private final RpcSerializer rpcSerializer;
 
     public RpcClientProcessor(RpcSerializer rpcSerializer) {
@@ -51,6 +47,7 @@ public class RpcClientProcessor implements BeanPostProcessor {
             String beanId = StringUtils.isEmpty(rpcClient.beanId()) ?
                     StringUtil.firstToLowerCase(targetClass.getSimpleName()) : rpcClient.beanId();
             RpcClientReq rpcClientInvoker = new RpcClientInvoker(rpcClient.value(), beanId, rpcClient.internal());
+            rpcClientInvoker.setCommMode(rpcClient.mode());
             rpcClientInvoker.setSerializer(rpcSerializer);
             RpcInvocationHandler rpcInvocationHandler = new RpcInvocationHandler(rpcClientInvoker);
             rpcInvocationHandler.setInterceptor(this.interceptor);

@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.tech.core.crypto.aes.AesEncryptor;
 import org.panda.tech.core.crypto.sha.ShaEncryptor;
-import org.panda.tech.core.rpc.RpcConstants;
+import org.panda.tech.core.rpc.constant.RpcConstants;
 import org.panda.tech.core.web.restful.RestfulResult;
 import org.panda.tech.core.web.util.WebHttpUtil;
 import org.springframework.core.Ordered;
