@@ -40,23 +40,25 @@ public class RpcClientAspect {
         Class<?> targetClass = joinPoint.getTarget().getClass();
         // RPC客户端解析
         RpcClient rpcClient = targetClass.getAnnotation(RpcClient.class);
+        // RPC方法解析
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        Method method = methodSignature.getMethod();
+        RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
+        if (rpcClient == null || rpcMethod == null) {
+            throw new RpcInvokerException(RpcConstants.EXC_RPC_NOT_CONFIG);
+        }
+        // 获取PRC动态代理
         String beanId = StringUtils.isEmpty(rpcClient.beanId()) ?
                 StringUtil.firstToLowerCase(targetClass.getSimpleName()) : rpcClient.beanId();
         RpcClientReq targetProxy = rpcClientProcessor.getRpcProxyClients().get(beanId);
         if (targetProxy == null) {
             throw new RpcInvokerException(RpcConstants.EXC_RPC_ILLEGAL_BEAN);
         }
-
-        // RPC方法解析
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
-        RpcMethod rpcMethod = method.getAnnotation(RpcMethod.class);
         // 获取方法的参数列表
         Parameter[] parameters = method.getParameters();
         // 获取方法参数值
         Object[] args = joinPoint.getArgs();
         Class<?> returnType = methodSignature.getReturnType();
-
         return targetProxy.invoke(rpcMethod.method(), rpcMethod.value(), parameters, args, returnType);
     }
 

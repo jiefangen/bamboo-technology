@@ -25,25 +25,25 @@ public class AuthServerClient {
     public RestfulResult<String> login(@RequestParam("service") String service,
                                        @RequestParam("username") String username,
                                        @RequestParam("password") String password) {
-        return null;
+        return RestfulResult.success();
     }
 
     @RpcMethod("/login")
     public RestfulResult<String> loginByCredentials(@RequestHeader(WebConstants.HEADER_SECRET_KEY) String secretKey,
                                                     @RequestHeader(WebConstants.HEADER_AUTH_CREDENTIALS) String credentials,
                                                     @RequestParam("service") String service) {
-        return null;
+        return RestfulResult.success();
     }
 
     @RpcMethod(value = "/access/validate", method = HttpMethod.GET)
     public RestfulResult<?> validate(@RequestHeader(WebConstants.HEADER_AUTH_JWT) String authToken,
                                      @RequestParam("service") String service) {
-        return null;
+        return RestfulResult.success();
     }
 
     @RpcMethod("/service/authorize")
     public RestfulResult<?> authorize(@RequestBody AppServiceModel appServiceModel) {
-        return null;
+        return RestfulResult.success();
     }
 
 }
