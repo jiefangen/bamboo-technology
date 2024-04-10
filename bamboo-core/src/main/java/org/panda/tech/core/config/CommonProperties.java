@@ -25,6 +25,11 @@ public class CommonProperties implements InitializingBean {
      * 受保护应用服务鉴权的URL模式
      */
     private List<String> authUrlPatterns;
+    /**
+     * 分布式全局统一认证授权环境参量
+     * key:运行环境；value:服务根路径
+     */
+    private Map<String, String> authEnvs = new HashMap<>();
 
     public Map<String, AppConfiguration> getApps() {
         return Collections.unmodifiableMap(this.apps);
@@ -146,4 +151,11 @@ public class CommonProperties implements InitializingBean {
         this.authUrlPatterns = authUrlPatterns;
     }
 
+    public Map<String, String> getAuthEnvs() {
+        return authEnvs;
+    }
+
+    public void setAuthEnvs(Map<String, String> authEnvs) {
+        this.authEnvs = authEnvs;
+    }
 }

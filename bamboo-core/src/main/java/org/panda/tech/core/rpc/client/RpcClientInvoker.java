@@ -36,10 +36,13 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClientR
      */
     private final String beanId;
 
-    public RpcClientInvoker(String serverUrlRoot, String beanId, boolean internal) {
-        this.serverUrlRoot = serverUrlRoot;
+    public RpcClientInvoker(String beanId, boolean internal) {
         this.beanId = beanId;
         this.internal = internal;
+    }
+
+    public void setServerUrlRoot(String serverUrlRoot){
+        this.serverUrlRoot = serverUrlRoot;
     }
 
     private String getInvokeUrl(String uri) {

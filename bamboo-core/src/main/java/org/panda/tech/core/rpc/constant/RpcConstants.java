@@ -45,5 +45,9 @@ public class RpcConstants {
      * 未配置RPC注解
      */
     public static final String EXC_RPC_NOT_CONFIG = "Rpc annotations are not configured";
+    /**
+     * 无效的URL根路径
+     */
+    public static final String EXC_RPC_ILLEGAL_ROOT = "Illegal Rpc urlRoot";
 
 }

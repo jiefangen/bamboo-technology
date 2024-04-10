@@ -52,10 +52,13 @@ public interface RpcClientReq {
      * 设置通信模式
      */
     void setCommMode(CommMode commMode);
-
     /**
      * 设置RPC序列化器
      */
     void setSerializer(RpcSerializer serializer);
+    /**
+     * 设置URL根路径
+     */
+    void setServerUrlRoot(String serverUrlRoot);
 
 }

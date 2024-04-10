@@ -14,9 +14,9 @@ import java.lang.annotation.*;
 @Inherited
 public @interface RpcClient {
     /**
-     * @return 服务根路径【必须】
+     * @return 服务根路径
      */
-    String value();
+    RpcEnv[] values() default {};
 
     /**
      * @return 通信模式

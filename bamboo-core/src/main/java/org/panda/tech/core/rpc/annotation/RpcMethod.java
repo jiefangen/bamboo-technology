@@ -12,14 +12,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface RpcMethod {
-    /**
-     * @return 资源路径【必须】
-     */
     String value() default Strings.EMPTY;
 
-    /**
-     * @return 请求方法
-     */
     HttpMethod method() default HttpMethod.POST;
-
 }

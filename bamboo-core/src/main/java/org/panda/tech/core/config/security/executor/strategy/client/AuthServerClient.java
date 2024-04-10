@@ -3,7 +3,6 @@ package org.panda.tech.core.config.security.executor.strategy.client;
 import org.panda.tech.core.config.security.model.AppServiceModel;
 import org.panda.tech.core.rpc.annotation.RpcClient;
 import org.panda.tech.core.rpc.annotation.RpcMethod;
-import org.panda.tech.core.rpc.constant.enums.CommMode;
 import org.panda.tech.core.web.config.WebConstants;
 import org.panda.tech.core.web.restful.RestfulResult;
 import org.springframework.http.HttpMethod;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author fangen
  **/
 @Component
-@RpcClient(value = "http://localhost:11006/auth", mode = CommMode.HTTP_CLIENT)
+@RpcClient
 public class AuthServerClient {
 
     @RpcMethod("/login")
