@@ -1,9 +1,11 @@
 package org.panda.tech.core.rpc.client;
 
 import org.panda.bamboo.common.constant.basic.Strings;
+import org.panda.bamboo.common.util.jackson.JsonUtil;
 import org.panda.tech.core.crypto.aes.AesEncryptor;
 import org.panda.tech.core.crypto.sha.ShaEncryptor;
 import org.panda.tech.core.rpc.constant.RpcConstants;
+import org.panda.tech.core.web.restful.RestfulResult;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -93,19 +95,25 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClientR
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType)
+    public <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType, Class<?>[] subType)
             throws Exception {
         Map<String, Object> rpcParams = getInvokeParams(parameters, args);
         Map<String, Object> params = (Map<String, Object>) rpcParams.get(RPC_KEY_PARAMS);
         Map<String, String> headers = (Map<String, String>) rpcParams.get(RPC_KEY_HEADERS);
         String response = request(method, getInvokeUrl(path), params, rpcParams.get(RPC_KEY_BODY_PARAMS), headers);
-        return this.serializer.deserialize(response, resultType);
+        if (RestfulResult.class.isAssignableFrom(resultType) && subType.length > 0) { // 内部规范返回，可反序列化内层数据
+            RestfulResult<?> restfulResult = this.serializer.deserialize(response, RestfulResult.class);
+            if (restfulResult.isSuccess() && restfulResult.getData() != null) {
+                return (T) RestfulResult.success(this.serializer.deserializeBean(JsonUtil.toJson(restfulResult.getData()), subType[0]));
+            }
+        }
+        return (T) this.serializer.deserializeBean(response, resultType);
     }
 
     @Override
     public <T> List<T> invoke4List(HttpMethod method, String path, Parameter[] parameters, Object[] args,
                                    Class<T> resultElementType) throws Exception {
-        String response = (String) invoke(method, path, parameters, args, resultElementType);
+        String response = (String) invoke(method, path, parameters, args, resultElementType, null);
         return this.serializer.deserializeList(response, resultElementType);
     }
 

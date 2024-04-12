@@ -27,7 +27,7 @@ public interface RpcClientReq {
      * @throws Exception
      *             如果执行过程中出现错误
      */
-    <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType)
+    <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType, Class<?>[] subType)
             throws Exception;
 
     /**
