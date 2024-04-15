@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -95,26 +94,23 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClientR
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType, Class<?>[] subType)
-            throws Exception {
+    public <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType,
+                        Class<?>[] subTypes) throws Exception {
         Map<String, Object> rpcParams = getInvokeParams(parameters, args);
         Map<String, Object> params = (Map<String, Object>) rpcParams.get(RPC_KEY_PARAMS);
         Map<String, String> headers = (Map<String, String>) rpcParams.get(RPC_KEY_HEADERS);
         String response = request(method, getInvokeUrl(path), params, rpcParams.get(RPC_KEY_BODY_PARAMS), headers);
-        if (RestfulResult.class.isAssignableFrom(resultType) && subType.length > 0) { // 内部规范返回，可反序列化内层数据
+        if (RestfulResult.class.isAssignableFrom(resultType)) { // 内部规范返回，可反序列化内层数据
             RestfulResult<?> restfulResult = this.serializer.deserialize(response, RestfulResult.class);
             if (restfulResult.isSuccess() && restfulResult.getData() != null) {
-                return (T) RestfulResult.success(this.serializer.deserializeBean(JsonUtil.toJson(restfulResult.getData()), subType[0]));
+                String dataStr = JsonUtil.toJson(restfulResult.getData());
+                if (subTypes.length > 0) { // RestfulResult中单层数据结果
+                    return (T) RestfulResult.success(this.serializer.deserializeBean(dataStr, subTypes[0],
+                            subTypes.length > 1 ? subTypes[1] : null));
+                }
             }
         }
-        return (T) this.serializer.deserializeBean(response, resultType);
-    }
-
-    @Override
-    public <T> List<T> invoke4List(HttpMethod method, String path, Parameter[] parameters, Object[] args,
-                                   Class<T> resultElementType) throws Exception {
-        String response = (String) invoke(method, path, parameters, args, resultElementType, null);
-        return this.serializer.deserializeList(response, resultElementType);
+        return (T) this.serializer.deserializeBean(response, resultType, subTypes.length > 0 ? subTypes[0] : null);
     }
 
 }

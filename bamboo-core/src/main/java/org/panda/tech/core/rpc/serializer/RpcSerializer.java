@@ -12,8 +12,9 @@ public interface RpcSerializer extends StringSerializer {
      *
      * @param s 序列化字符串
      * @param type 期望类型
+     * @param subType 期望类型中的子类型
      * @return Bean
      */
-    Object deserializeBean(String s, Class<?> type);
+    Object deserializeBean(String s, Class<?> type, Class<?> subType);
 
 }

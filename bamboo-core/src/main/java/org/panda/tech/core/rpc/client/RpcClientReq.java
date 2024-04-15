@@ -5,7 +5,6 @@ import org.panda.tech.core.rpc.serializer.RpcSerializer;
 import org.springframework.http.HttpMethod;
 
 import java.lang.reflect.Parameter;
-import java.util.List;
 
 /**
  * RPC客户端
@@ -27,26 +26,8 @@ public interface RpcClientReq {
      * @throws Exception
      *             如果执行过程中出现错误
      */
-    <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType, Class<?>[] subType)
-            throws Exception;
-
-    /**
-     * 执行指定RPC方法得到清单型结果
-     *
-     * @param parameters
-     *            参数方法属性
-     * @param path
-     *            资源路径
-     * @param args
-     *            参数集
-     * @param resultElementType
-     *            期望的结果清单中的元素类型
-     * @return 清单型执行结果
-     * @throws Exception
-     *             如果执行过程中出现错误
-     */
-    <T> List<T> invoke4List(HttpMethod method, String path, Parameter[] parameters,  Object[] args, Class<T> resultElementType)
-            throws Exception;
+    <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType,
+                 Class<?>[] subTypes) throws Exception;
 
     /**
      * 设置通信模式

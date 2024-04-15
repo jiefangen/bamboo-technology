@@ -10,9 +10,9 @@ import java.util.List;
 public class JsonRpcSerializer extends JsonSerializer implements RpcSerializer {
 
     @Override
-    public Object deserializeBean(String s, Class<?> type) {
-        if (List.class.isAssignableFrom(type)) {
-            return super.deserializeList(s, type);
+    public Object deserializeBean(String s, Class<?> type, Class<?> subType) {
+        if (List.class.isAssignableFrom(type) && subType != null) {
+            return super.deserializeList(s, subType);
         } else if (Object[].class.isAssignableFrom(type)) {
             return super.deserializeArray(s);
         }
