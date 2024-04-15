@@ -1,9 +1,11 @@
 package org.panda.tech.core.rpc.client;
 
 import org.panda.bamboo.common.constant.basic.Strings;
+import org.panda.bamboo.common.util.jackson.JsonUtil;
 import org.panda.tech.core.crypto.aes.AesEncryptor;
 import org.panda.tech.core.crypto.sha.ShaEncryptor;
 import org.panda.tech.core.rpc.constant.RpcConstants;
+import org.panda.tech.core.web.restful.RestfulResult;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,10 +37,13 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClientR
      */
     private final String beanId;
 
-    public RpcClientInvoker(String serverUrlRoot, String beanId, boolean internal) {
-        this.serverUrlRoot = serverUrlRoot;
+    public RpcClientInvoker(String beanId, boolean internal) {
         this.beanId = beanId;
         this.internal = internal;
+    }
+
+    public void setServerUrlRoot(String serverUrlRoot){
+        this.serverUrlRoot = serverUrlRoot;
     }
 
     private String getInvokeUrl(String uri) {
@@ -90,20 +94,23 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClientR
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType)
-            throws Exception {
+    public <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType,
+                        Class<?>[] subTypes) throws Exception {
         Map<String, Object> rpcParams = getInvokeParams(parameters, args);
         Map<String, Object> params = (Map<String, Object>) rpcParams.get(RPC_KEY_PARAMS);
         Map<String, String> headers = (Map<String, String>) rpcParams.get(RPC_KEY_HEADERS);
         String response = request(method, getInvokeUrl(path), params, rpcParams.get(RPC_KEY_BODY_PARAMS), headers);
-        return this.serializer.deserialize(response, resultType);
-    }
-
-    @Override
-    public <T> List<T> invoke4List(HttpMethod method, String path, Parameter[] parameters, Object[] args,
-                                   Class<T> resultElementType) throws Exception {
-        String response = (String) invoke(method, path, parameters, args, resultElementType);
-        return this.serializer.deserializeList(response, resultElementType);
+        if (RestfulResult.class.isAssignableFrom(resultType)) { // 内部规范返回，可反序列化内层数据
+            RestfulResult<?> restfulResult = this.serializer.deserialize(response, RestfulResult.class);
+            if (restfulResult.isSuccess() && restfulResult.getData() != null) {
+                String dataStr = JsonUtil.toJson(restfulResult.getData());
+                if (subTypes.length > 0) { // RestfulResult中单层数据结果
+                    return (T) RestfulResult.success(this.serializer.deserializeBean(dataStr, subTypes[0],
+                            subTypes.length > 1 ? subTypes[1] : null));
+                }
+            }
+        }
+        return (T) this.serializer.deserializeBean(response, resultType, subTypes.length > 0 ? subTypes[0] : null);
     }
 
 }

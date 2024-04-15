@@ -42,8 +42,12 @@ public class RpcConstants {
      */
     public static final String EXC_RPC_ILLEGAL_BEAN = "Illegal Rpc client beanId";
     /**
-     * 未初始化配置RestTemplate
+     * 未配置RPC注解
      */
-    public static final String EXC_RPC_NOT_REST = "Configuring RestTemplate not initialized";
+    public static final String EXC_RPC_NOT_CONFIG = "Rpc annotations are not configured";
+    /**
+     * 无效的URL根路径
+     */
+    public static final String EXC_RPC_ILLEGAL_ROOT = "Illegal Rpc urlRoot";
 
 }

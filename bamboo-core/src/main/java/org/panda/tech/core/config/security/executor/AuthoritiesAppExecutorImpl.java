@@ -2,8 +2,10 @@ package org.panda.tech.core.config.security.executor;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.jackson.JsonUtil;
+import org.panda.bamboo.core.context.SpringContextHolder;
 import org.panda.tech.core.config.CommonProperties;
 import org.panda.tech.core.config.app.AppConstants;
 import org.panda.tech.core.config.app.AppFacade;
@@ -12,6 +14,7 @@ import org.panda.tech.core.config.security.authority.AuthoritiesAppExecutor;
 import org.panda.tech.core.config.security.executor.strategy.client.AuthServerClient;
 import org.panda.tech.core.config.security.model.AppServiceModel;
 import org.panda.tech.core.web.restful.RestfulResult;
+import org.panda.tech.core.web.util.NetUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -43,7 +46,6 @@ public class AuthoritiesAppExecutorImpl implements AuthoritiesAppExecutor {
         }
         AppFacade appFacade = commonProperties.getAppFacade(appName, true);
         AppServiceModel appServiceModel = new AppServiceModel();
-        appServiceModel.setAppName(appName);
         if (appFacade != null) {
             appServiceModel.setCaption(appFacade.getCaption());
             appServiceModel.setBusiness(appFacade.getBusiness());
@@ -58,6 +60,10 @@ public class AuthoritiesAppExecutorImpl implements AuthoritiesAppExecutor {
         }
         appServiceModel.setPermissions(permissions);
         try {
+            String env = SpringContextHolder.getActiveProfile();
+            appServiceModel.setEnv(env);
+            appServiceModel.setAppName(appName + Strings.MINUS + env);
+            appServiceModel.setHost(NetUtil.getLocalHost());
             RestfulResult<?> result = authServerClient.authorize(appServiceModel);
             LogUtil.info(getClass(), "{} service permissions loading completed, authorize result: {}", appName,
                     JsonUtil.toJson(result));

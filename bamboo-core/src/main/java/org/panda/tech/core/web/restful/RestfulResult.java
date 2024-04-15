@@ -48,6 +48,10 @@ public class RestfulResult<T> implements Serializable {
         return transform(failedResult.getCode(), failedResult.getMessage(), null);
     }
 
+    public boolean isSuccess() {
+        return this.code == ResultEnum.SUCCESS.getCode();
+    }
+
     private static <T> RestfulResult<T> transform(int code, String message, T data) {
         RestfulResult<T> result = new RestfulResult<>();
         result.code = code;

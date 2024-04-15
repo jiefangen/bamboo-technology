@@ -46,7 +46,7 @@ public class RpcClientProcessor implements BeanPostProcessor {
             RpcClient rpcClient = targetClass.getAnnotation(RpcClient.class);
             String beanId = StringUtils.isEmpty(rpcClient.beanId()) ?
                     StringUtil.firstToLowerCase(targetClass.getSimpleName()) : rpcClient.beanId();
-            RpcClientReq rpcClientInvoker = new RpcClientInvoker(rpcClient.value(), beanId, rpcClient.internal());
+            RpcClientReq rpcClientInvoker = new RpcClientInvoker(beanId, rpcClient.internal());
             rpcClientInvoker.setCommMode(rpcClient.mode());
             rpcClientInvoker.setSerializer(rpcSerializer);
             RpcInvocationHandler rpcInvocationHandler = new RpcInvocationHandler(rpcClientInvoker);
