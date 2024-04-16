@@ -19,6 +19,11 @@
             <version>${technology.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.panda.tech</groupId>
+            <artifactId>bamboo-data</artifactId>
+            <version>${technology.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
         </dependency>

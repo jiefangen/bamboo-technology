@@ -1,8 +1,8 @@
 package org.panda.tech.core.rpc.client;
 
-import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.tech.core.rpc.client.rest.RestTemplateClient;
 import org.panda.tech.core.rpc.constant.enums.CommMode;
+import org.panda.tech.core.rpc.constant.exception.RpcInvokerException;
 import org.panda.tech.core.rpc.serializer.RpcSerializer;
 import org.panda.tech.core.util.http.HttpClientUtil;
 import org.springframework.http.HttpMethod;
@@ -16,7 +16,7 @@ public class ClientRequestSupport {
 
     protected RpcSerializer serializer;
 
-    // 通信模式：1-原生HttpClient；2-RestTemplate；3-gRPC
+    // 通信模式：1-原生HttpClient；2-RestTemplate
     private CommMode commMode;
 
     public void setCommMode(CommMode commMode) {
@@ -39,16 +39,15 @@ public class ClientRequestSupport {
      * @throws Exception 如果请求过程中有错误
      */
     public String request(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
-                          Map<String, String> headers)
-            throws Exception {
+                          Map<String, String> headers) throws Exception {
         switch (this.commMode) {
             case HTTP_CLIENT:
                 return HttpClientUtil.commonRequest(method, url, params, bodyParams, headers);
             case REST_TEMPLATE:
                 return RestTemplateClient.request(method, url, params, serializer.serialize(bodyParams), headers);
-            case GRPC:
+//            case GRPC:
         }
-        return Strings.STR_NULL;
+        throw new RpcInvokerException();
     }
 
 }

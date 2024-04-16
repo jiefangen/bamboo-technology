@@ -84,7 +84,7 @@ public class RpcClientAspect {
         // 获取方法参数值
         Object[] args = joinPoint.getArgs();
         Class<?> returnType = methodSignature.getReturnType();
-        return targetProxy.invoke(rpcMethod.method(), rpcMethod.value(), parameters, args, returnType, rpcMethod.subType());
+        return targetProxy.invoke(rpcMethod.method(), rpcMethod.value(), parameters, args, returnType, rpcMethod.subTypes());
     }
 
 }
