@@ -23,33 +23,32 @@ public class RestTemplateClient {
 
     private static ResponseEntity<String> exchange(HttpMethod method, String url, Map<String, Object> params,
                                                    Object bodyParams, Map<String, String> headers) {
-        if (restTemplate != null) {
-            if (params != null && !params.isEmpty()) {
-                url = NetUtil.mergeParams(url, params, Strings.ENCODING_UTF8);
-            }
-            // 设置请求头
-            HttpHeaders httpHeaders = new HttpHeaders();
-            if (headers != null) {
-                httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-                for (Map.Entry<String, String> entry : headers.entrySet()) {
-                    httpHeaders.add(entry.getKey(), entry.getValue());
-                }
-            }
-            HttpEntity<Object> requestEntity = new HttpEntity<>(bodyParams, httpHeaders);
-            return restTemplate.exchange(url, method, requestEntity, String.class);
+        if (params != null && !params.isEmpty()) {
+            url = NetUtil.mergeParams(url, params, Strings.ENCODING_UTF8);
         }
-        return null;
+        // 设置请求头
+        HttpHeaders httpHeaders = new HttpHeaders();
+        if (headers != null) {
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                httpHeaders.add(entry.getKey(), entry.getValue());
+            }
+        }
+        HttpEntity<Object> requestEntity = new HttpEntity<>(bodyParams, httpHeaders);
+        return restTemplate.exchange(url, method, requestEntity, String.class);
     }
 
     public static String request(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
                                                   Map<String, String> headers) throws Exception {
-        ResponseEntity<String> response = exchange(method, url, params, bodyParams, headers);
-        if (response != null) {
+        try {
+            ResponseEntity<String> response = exchange(method, url, params, bodyParams, headers);
             if (response.getStatusCode() == HttpStatus.OK) {
                 return response.getBody();
             } else {
                 LogUtil.error(RestTemplateClient.class, "Remote call failure，response: {}", response);
             }
+        } catch (Exception e) {
+            LogUtil.error(RestTemplateClient.class, e);
         }
         return null;
     }

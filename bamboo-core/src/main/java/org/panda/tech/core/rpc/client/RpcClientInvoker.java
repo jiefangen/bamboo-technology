@@ -6,6 +6,8 @@ import org.panda.tech.core.crypto.aes.AesEncryptor;
 import org.panda.tech.core.crypto.sha.ShaEncryptor;
 import org.panda.tech.core.rpc.constant.RpcConstants;
 import org.panda.tech.core.web.restful.RestfulResult;
+import org.panda.tech.data.model.query.Paged;
+import org.panda.tech.data.model.query.QueryResult;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -100,13 +102,20 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClientR
         Map<String, Object> params = (Map<String, Object>) rpcParams.get(RPC_KEY_PARAMS);
         Map<String, String> headers = (Map<String, String>) rpcParams.get(RPC_KEY_HEADERS);
         String response = request(method, getInvokeUrl(path), params, rpcParams.get(RPC_KEY_BODY_PARAMS), headers);
-        if (RestfulResult.class.isAssignableFrom(resultType)) { // 内部规范返回，可反序列化内层数据
-            RestfulResult<?> restfulResult = this.serializer.deserialize(response, RestfulResult.class);
-            if (restfulResult.isSuccess() && restfulResult.getData() != null) {
-                String dataStr = JsonUtil.toJson(restfulResult.getData());
-                if (subTypes.length > 0) { // RestfulResult中单层数据结果
+        if (subTypes.length > 0) { // 多层嵌套数据类型解析
+            if (RestfulResult.class.isAssignableFrom(resultType)) { // 内部规范返回，可反序列化内层数据
+                RestfulResult<?> restfulResult = this.serializer.deserialize(response, RestfulResult.class);
+                if (restfulResult.isSuccess() && restfulResult.getData() != null) {
+                    String dataStr = JsonUtil.toJson(restfulResult.getData());
                     return (T) RestfulResult.success(this.serializer.deserializeBean(dataStr, subTypes[0],
                             subTypes.length > 1 ? subTypes[1] : null));
+                }
+            } else if (QueryResult.class.isAssignableFrom(resultType)) {
+                QueryResult<?> queryResult = this.serializer.deserialize(response, QueryResult.class);
+                Paged paged = queryResult.getPaged();
+                if (paged.getTotal() > 0L) {
+                    String records = JsonUtil.toJson(queryResult.getRecords());
+                    return (T) new QueryResult<>(this.serializer.deserializeList(records, subTypes[0]), paged);
                 }
             }
         }

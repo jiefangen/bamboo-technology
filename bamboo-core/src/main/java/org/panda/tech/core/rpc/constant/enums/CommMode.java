@@ -13,7 +13,7 @@ public enum CommMode {
     @EnumValue("RestTemplate")
     REST_TEMPLATE,
 
-    @EnumValue("gRPC")
-    GRPC;
+//    @EnumValue("gRPC")
+//    GRPC;
 
 }

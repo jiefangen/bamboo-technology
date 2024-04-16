@@ -37,10 +37,10 @@ public class HttpClientUtil {
     @SuppressWarnings("unchecked")
     private static CloseableHttpResponse execute(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
                                                  Map<String, String> headers, String encoding) throws Exception {
-        HttpRequestBase request = null;
         if (params != null && !params.isEmpty()) {
             url = NetUtil.mergeParams(url, params, Strings.ENCODING_UTF8);
         }
+        HttpRequestBase request = null;
         switch (method) {
             case GET:
                 request = new HttpGet(url);
@@ -85,16 +85,21 @@ public class HttpClientUtil {
 
     public static Binary<Integer, String> request(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
                                                   Map<String, String> headers, String encoding) throws Exception {
-        CloseableHttpResponse response = execute(method, url, params, bodyParams, headers, encoding);
-        if (response != null) {
-            try {
+        CloseableHttpResponse response = null;
+        try {
+            response = execute(method, url, params, bodyParams, headers, encoding);
+            if (response != null) {
                 int statusCode = response.getStatusLine().getStatusCode();
                 String content = EntityUtils.toString(response.getEntity(), encoding);
                 if (statusCode != HttpStatus.SC_OK) {
                     LogUtil.error(HttpClientUtil.class, content);
                 }
                 return new Binary<>(statusCode, content);
-            } finally { // 确保关闭请求连接
+            }
+        } catch (Exception e) {
+            LogUtil.error(HttpClientUtil.class, e);
+        } finally { // 确保关闭请求连接
+            if (response != null) {
                 response.close();
             }
         }
@@ -103,9 +108,7 @@ public class HttpClientUtil {
 
     public static void download(String url, Map<String, Object> params, Map<String, String> headers,
             BiConsumer<HttpEntity, Map<String, String>> consumer) throws IOException {
-        try {
-            CloseableHttpResponse response = execute(HttpMethod.GET, url, params, null, headers,
-                    Strings.ENCODING_UTF8);
+        try (CloseableHttpResponse response = execute(HttpMethod.GET, url, params, null, headers, Strings.ENCODING_UTF8)) {
             if (response != null) {
                 StatusLine statusLine = response.getStatusLine();
                 if (statusLine.getStatusCode() == HttpStatus.SC_OK) {
@@ -133,22 +136,8 @@ public class HttpClientUtil {
 
     public static String commonRequest(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
                                        Map<String, String> headers) throws Exception {
-        CloseableHttpResponse response = execute(method, url, params, bodyParams, headers, Strings.ENCODING_UTF8);
-        if (response != null) {
-            try {
-                int statusCode = response.getStatusLine().getStatusCode();
-                String content = EntityUtils.toString(response.getEntity(), Strings.ENCODING_UTF8);
-                if (statusCode != HttpStatus.SC_OK) {
-                    LogUtil.error(HttpClientUtil.class, content);
-                }
-                return content;
-            } catch (Exception e) {
-                LogUtil.error(HttpClientUtil.class, e);
-            } finally { // 确保关闭请求连接
-                response.close();
-            }
-        }
-        return null;
+        Binary<Integer, String> resBinary = request(method, url, params, bodyParams, headers, Strings.ENCODING_UTF8);
+        return resBinary == null ? null : resBinary.getRight();
     }
 
     public static String requestByGet(String url, Map<String, Object> params, Map<String, String> headers)
