@@ -269,6 +269,8 @@ public abstract class WebMvcSecurityConfigurerSupport extends WebSecurityConfigu
                     } else {
                         String pattern = action.getUri().replaceAll("\\{\\S+\\}", Strings.ASTERISK);
                         matcher = new AntPathRequestMatcher(pattern, methodValue);
+                        // 匿名资源加入到全局忽略资源容器
+                        this.securityProperties.getIgnoringPatterns().add(pattern);
                     }
                     matchers.add(matcher);
                 }

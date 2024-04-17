@@ -3,6 +3,7 @@ package org.panda.tech.core.web.config.security;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -10,7 +11,7 @@ import java.util.List;
 public class WebSecurityProperties {
 
     private boolean csrfEnabled;
-    private List<String> ignoringPatterns;
+    private List<String> ignoringPatterns = new ArrayList<>();
     /**
      * 没有权限注解的处理方法是否允许匿名访问，默认为false。
      * 注意：设置为true会带来安全隐患，忘记配置权限注解的处理方法将可匿名访问
