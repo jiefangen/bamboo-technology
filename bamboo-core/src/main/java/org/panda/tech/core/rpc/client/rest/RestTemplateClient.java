@@ -40,15 +40,11 @@ public class RestTemplateClient {
 
     public static String request(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
                                                   Map<String, String> headers) throws Exception {
-        try {
-            ResponseEntity<String> response = exchange(method, url, params, bodyParams, headers);
-            if (response.getStatusCode() == HttpStatus.OK) {
-                return response.getBody();
-            } else {
-                LogUtil.error(RestTemplateClient.class, "Remote call failure，response: {}", response);
-            }
-        } catch (Exception e) {
-            LogUtil.error(RestTemplateClient.class, e);
+        ResponseEntity<String> response = exchange(method, url, params, bodyParams, headers);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return response.getBody();
+        } else {
+            LogUtil.error(RestTemplateClient.class, "Remote call failure，response: {}", response);
         }
         return null;
     }
