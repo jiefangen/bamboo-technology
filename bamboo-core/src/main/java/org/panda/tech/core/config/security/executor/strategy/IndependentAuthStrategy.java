@@ -17,13 +17,13 @@ public class IndependentAuthStrategy implements AuthManagerStrategy {
     private AuthServerClient authServerClient;
 
     @Override
-    public RestfulResult<String> getAuthToken(String service, String username, String password) {
-        return authServerClient.login(service, username, password);
+    public RestfulResult<String> getAuthToken(String username, String password, String service) {
+        return authServerClient.login(username, password, service);
     }
 
     @Override
-    public RestfulResult<String> getTokenByCredentials(String secretKey, String credentials, String server) {
-        return authServerClient.loginByCredentials(secretKey, credentials, server);
+    public RestfulResult<String> getTokenByCredentials(String secretKey, String credentials, String serviceName) {
+        return authServerClient.loginByCredentials(secretKey, credentials, serviceName);
     }
 
     @Override

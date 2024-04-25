@@ -19,19 +19,11 @@ import java.util.Map;
  **/
 public abstract class DynamicDataSourceSupport {
 
-    // 动态数据源名称
-    protected static final String DATASOURCE_PRIMARY_NAME = "primaryDataSource";
-    protected static final String DATASOURCE_SECONDARY_NAME = "secondaryDataSource";
-    // 扩展第三方数据源
-    protected static final String DATASOURCE_TERTIARY_NAME = "tertiaryDataSource";
-
     @Bean
-    public DynamicDataSource dynamicDataSource(@Qualifier(DATASOURCE_PRIMARY_NAME) DataSource primaryDataSource,
-                                               @Qualifier(DATASOURCE_SECONDARY_NAME) DataSource secondaryDataSource) {
+    public DynamicDataSource dynamicDataSource(@Qualifier(DataCommons.DATASOURCE_PRIMARY) DataSource primaryDataSource) {
         Map<Object, Object> targetDataSource = new HashMap<>();
         targetDataSource.put(DataCommons.DATASOURCE_PRIMARY, primaryDataSource);
-        targetDataSource.put(DataCommons.DATASOURCE_SECONDARY, secondaryDataSource);
-        if (getTargetDataSource() != null) { // 自定义数据源加载
+        if (getTargetDataSource() != null && !getTargetDataSource().isEmpty()) { // 自定义数据源加载
             targetDataSource.putAll(getTargetDataSource());
         }
         DynamicDataSource dataSource = new DynamicDataSource();
@@ -45,15 +37,13 @@ public abstract class DynamicDataSourceSupport {
             throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dynamicDataSource);
-        bean.setMapperLocations(
-                new PathMatchingResourcePatternResolver().getResources(getMapperLocationPattern()));
+        bean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(getMapperLocationPattern()));
         return bean.getObject();
     }
 
     protected abstract String getMapperLocationPattern();
 
     protected Map<Object, Object> getTargetDataSource() {
-        return null;
+        return new HashMap<>();
     }
-
 }

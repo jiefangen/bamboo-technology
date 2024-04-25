@@ -97,7 +97,7 @@ public class JwtGeneratorImpl implements JwtGenerator {
             case Profiles.TEST:
                 return 100;
             default:
-                return 10;
+                return 30;
         }
     }
 
