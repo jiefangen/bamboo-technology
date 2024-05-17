@@ -20,6 +20,12 @@ public class Commons {
     public static final String RESULT_UNKNOWN = "unknown";
 
     /**
+     * 项目资源路径
+     */
+    public static final String PROJECT_JAVA_PATH = "src/main/java/";
+    public static final String PROJECT_RES_PATH = "src/main/resources/";
+
+    /**
      * 其它
      */
     public static final String COMMON_APPLICATION = "application";
