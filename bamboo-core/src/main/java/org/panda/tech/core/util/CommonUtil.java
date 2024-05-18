@@ -3,6 +3,9 @@ package org.panda.tech.core.util;
 import org.apache.commons.lang3.StringUtils;
 import org.panda.bamboo.common.constant.basic.Strings;
 
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -72,4 +75,18 @@ public class CommonUtil {
         return payloads;
     }
 
+    /**
+     * 获取指定类运行目录
+     *
+     * @param clazz 指定类
+     * @return 指定类运行路径
+     */
+    public static String getCurrentPath(Class<?> clazz) throws URISyntaxException {
+        Path currentPath = Paths.get(clazz.getProtectionDomain().getCodeSource().getLocation().toURI());
+        String currentDir = currentPath.getParent().toString();
+        if (currentDir.endsWith("target")) { // 去掉 "target" 目录
+            currentDir = currentDir.replaceFirst("/target$", Strings.EMPTY);
+        }
+        return currentDir;
+    }
 }

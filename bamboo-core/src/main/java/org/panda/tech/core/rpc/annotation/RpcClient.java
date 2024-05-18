@@ -14,7 +14,7 @@ import java.lang.annotation.*;
 @Inherited
 public @interface RpcClient {
     /**
-     * @return 服务根路径
+     * @return 服务根路径-绑定环境变量
      */
     RpcEnv[] values() default {};
 

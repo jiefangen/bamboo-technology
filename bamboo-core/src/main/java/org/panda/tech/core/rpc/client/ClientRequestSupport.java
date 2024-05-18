@@ -45,7 +45,6 @@ public class ClientRequestSupport {
                 return HttpClientUtil.commonRequest(method, url, params, bodyParams, headers);
             case REST_TEMPLATE:
                 return RestTemplateClient.request(method, url, params, serializer.serialize(bodyParams), headers);
-//            case GRPC:
         }
         throw new RpcInvokerException();
     }

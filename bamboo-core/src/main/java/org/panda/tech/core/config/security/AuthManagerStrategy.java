@@ -24,10 +24,10 @@ public interface AuthManagerStrategy {
      *
      * @param secretKey 密钥
      * @param credentials 账户凭证
-     * @param server 可访问的服务名
+     * @param serviceName 可访问的服务名（带环境变量）
      * @return 认证授权token
      */
-    RestfulResult<String> getTokenByCredentials(String secretKey, String credentials, String server);
+    RestfulResult<String> getTokenByCredentials(String secretKey, String credentials, String serviceName);
 
     /**
      * 服务授权验证

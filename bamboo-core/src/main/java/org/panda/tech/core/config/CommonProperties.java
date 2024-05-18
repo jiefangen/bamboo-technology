@@ -27,9 +27,14 @@ public class CommonProperties implements InitializingBean {
     private List<String> authUrlPatterns;
     /**
      * 分布式全局统一认证授权环境参量
-     * key:运行环境；value:服务根路径
+     * key-运行环境；value-服务根路径
      */
     private Map<String, String> authEnvs = new HashMap<>();
+    /**
+     * RPC内部全局调用根路径
+     * key-服务beanId；value-服务根路径
+     */
+    private Map<String, String> serviceRoot = new HashMap<>();
 
     public Map<String, AppConfiguration> getApps() {
         return Collections.unmodifiableMap(this.apps);
@@ -157,5 +162,13 @@ public class CommonProperties implements InitializingBean {
 
     public void setAuthEnvs(Map<String, String> authEnvs) {
         this.authEnvs = authEnvs;
+    }
+
+    public Map<String, String> getServiceRoot() {
+        return serviceRoot;
+    }
+
+    public void setServiceRoot(Map<String, String> serviceRoot) {
+        this.serviceRoot = serviceRoot;
     }
 }

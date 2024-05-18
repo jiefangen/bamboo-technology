@@ -96,8 +96,6 @@ public class HttpClientUtil {
                 }
                 return new Binary<>(statusCode, content);
             }
-        } catch (Exception e) {
-            LogUtil.error(HttpClientUtil.class, e);
         } finally { // 确保关闭请求连接
             if (response != null) {
                 response.close();

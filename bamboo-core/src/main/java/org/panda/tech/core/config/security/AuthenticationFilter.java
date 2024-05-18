@@ -2,7 +2,9 @@ package org.panda.tech.core.config.security;
 
 import org.apache.commons.lang3.StringUtils;
 import org.panda.bamboo.common.constant.Commons;
+import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.util.LogUtil;
+import org.panda.bamboo.core.context.SpringContextHolder;
 import org.panda.tech.core.config.app.AppConstants;
 import org.panda.tech.core.web.config.WebConstants;
 import org.panda.tech.core.web.restful.RestfulResult;
@@ -27,7 +29,7 @@ public class AuthenticationFilter extends AbstractAuthSupport implements Filter 
     private final Class<?> strategyType;
 
     @Value(AppConstants.EL_SPRING_APP_NAME)
-    private String server;
+    private String appName;
 
     public AuthenticationFilter(Class<?> strategyType) {
         this.strategyType = strategyType;
@@ -46,8 +48,9 @@ public class AuthenticationFilter extends AbstractAuthSupport implements Filter 
                 try {
                     String secretKey = WebHttpUtil.getHeader(request, WebConstants.HEADER_SECRET_KEY);
                     // 账户凭证验证签名请求凭证
+                    String serviceName = appName + Strings.MINUS + SpringContextHolder.getActiveProfile();
                     RestfulResult<String> tokenResult = super.getAuthStrategy().getTokenByCredentials(secretKey,
-                            credentials, server);
+                            credentials, serviceName);
                     if (Commons.RESULT_SUCCESS.equals(tokenResult.getMessage())) {
                         request.setAttribute(WebConstants.HEADER_AUTH_JWT, tokenResult.getData());
                     } else {

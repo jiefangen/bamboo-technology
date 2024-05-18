@@ -17,5 +17,4 @@ public class CollectionGrouper {
         }
         return list.stream().collect(CustomCollectors.groupByNumber(number));
     }
-
 }

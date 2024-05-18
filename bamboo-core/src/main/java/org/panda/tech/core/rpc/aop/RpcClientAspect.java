@@ -59,8 +59,12 @@ public class RpcClientAspect {
         RpcEnv[] rpcEnvArr = rpcClient.values();
         String urlRoot = null;
         if (rpcEnvArr.length == 0) { // RPC客户端注解未配置默认走认证授权服务
-            Map<String, String> authEnvs = commonProperties.getAuthEnvs();
-            urlRoot = authEnvs.get(env);
+            Map<String, String> serviceRoot = commonProperties.getServiceRoot();
+            urlRoot = serviceRoot.get(beanId);
+            if (StringUtils.isEmpty(urlRoot) && beanId.startsWith("auth")) {
+                Map<String, String> authEnvs = commonProperties.getAuthEnvs();
+                urlRoot = authEnvs.get(env);
+            }
         } else {
             for (RpcEnv rpcEnv : rpcEnvArr) {
                 if (env.equals(rpcEnv.active())) {

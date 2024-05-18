@@ -2,6 +2,7 @@ package org.panda.tech.data.codegen;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.panda.bamboo.common.constant.Commons;
 import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.parser.FreeMarkerTemplateParser;
 import org.panda.bamboo.common.parser.TemplateParser;
@@ -59,7 +60,7 @@ public abstract class ClassGeneratorSupport extends ModelBasedGeneratorSupport {
 
     private File getJavaFile(String className) throws IOException {
         String projectPath = System.getProperty("user.dir"); // 运行项目工程根
-        String path = "src/main/java/" + className.replaceAll("[.]", Strings.SLASH) + ".java";
+        String path = Commons.PROJECT_JAVA_PATH + className.replaceAll("[.]", Strings.SLASH) + ".java";
         String pathname = projectPath + Strings.SLASH + path;
         File file = new File(pathname);
         file.getParentFile().mkdirs();
