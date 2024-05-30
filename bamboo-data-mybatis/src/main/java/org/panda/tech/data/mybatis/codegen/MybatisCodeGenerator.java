@@ -2,7 +2,7 @@ package org.panda.tech.data.mybatis.codegen;
 
 
 /**
- * JPA实体映射文件生成器
+ * mybatis实体映射文件生成器
  *
  * @author fangen
  */
