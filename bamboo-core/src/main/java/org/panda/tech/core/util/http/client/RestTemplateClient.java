@@ -1,4 +1,4 @@
-package org.panda.tech.core.rpc.client.rest;
+package org.panda.tech.core.util.http.client;
 
 
 import org.panda.bamboo.common.constant.basic.Strings;

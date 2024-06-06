@@ -1,6 +1,6 @@
 package org.panda.tech.core.rpc.client;
 
-import org.panda.tech.core.rpc.client.rest.RestTemplateClient;
+import org.panda.tech.core.util.http.client.RestTemplateClient;
 import org.panda.tech.core.rpc.constant.enums.CommMode;
 import org.panda.tech.core.rpc.constant.exception.RpcInvokerException;
 import org.panda.tech.core.rpc.serializer.RpcSerializer;

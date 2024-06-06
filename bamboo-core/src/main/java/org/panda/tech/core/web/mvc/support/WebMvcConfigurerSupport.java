@@ -5,6 +5,7 @@ import org.panda.bamboo.common.util.clazz.BeanUtil;
 import org.panda.bamboo.common.util.lang.CollectionUtil;
 import org.panda.tech.core.config.CommonProperties;
 import org.panda.tech.core.web.config.WebConstants;
+import org.panda.tech.core.web.config.security.WebSecurityProperties;
 import org.panda.tech.core.web.mvc.cors.CorsRegistryProperties;
 import org.panda.tech.core.web.mvc.cors.IgnoreNullConfigCorsProcessor;
 import org.panda.tech.core.web.mvc.cors.SingleCorsConfigurationSource;
@@ -37,6 +38,8 @@ public abstract class WebMvcConfigurerSupport implements WebMvcConfigurer {
     private SingleCorsConfigurationSource corsConfigurationSource;
     @Autowired
     private IgnoreNullConfigCorsProcessor ignoreNullConfigCorsProcessor;
+    @Autowired
+    private WebSecurityProperties securityProperties;
 
     protected final ApplicationContext getApplicationContext() {
         return this.applicationContext;
@@ -53,8 +56,10 @@ public abstract class WebMvcConfigurerSupport implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         Map<String, HandlerInterceptor> interceptors = getApplicationContext().getBeansOfType(HandlerInterceptor.class);
+        // 拦截器忽略资源统一配置，适合通过所有拦截器的资源
+        List<String> ignoringPatterns = securityProperties.getIgnoringPatterns();
         interceptors.forEach((name, interceptor) -> {
-            registry.addInterceptor(interceptor);
+            registry.addInterceptor(interceptor).excludePathPatterns(ignoringPatterns);
         });
     }
 
