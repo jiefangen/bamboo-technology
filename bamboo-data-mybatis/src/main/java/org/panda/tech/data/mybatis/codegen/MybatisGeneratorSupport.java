@@ -53,7 +53,7 @@ public abstract class MybatisGeneratorSupport {
             @Override
             public DbColumnType processTypeConvert(GlobalConfig globalConfig, String fieldType) {
                 if (fieldType.toLowerCase().contains("tinyint")) {
-                    return DbColumnType.BOOLEAN;
+                    return DbColumnType.INTEGER;
                 }
                 return (DbColumnType) super.processTypeConvert(globalConfig, fieldType);
             }
