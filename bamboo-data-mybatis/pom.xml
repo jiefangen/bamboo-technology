@@ -16,6 +16,7 @@
         <druid-spring.version>1.2.16</druid-spring.version>
         <mybatis-plus.version>3.4.3</mybatis-plus.version>
         <mybatis-generator.version>3.4.1</mybatis-generator.version>
+        <pagehelper.version>1.4.2</pagehelper.version>
     </properties>
 
     <dependencies>
@@ -38,6 +39,12 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
             <version>${mybatis-generator.version}</version>
+        </dependency>
+        <!-- 分页插件 -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>${pagehelper.version}</version>
         </dependency>
     </dependencies>
 </project>

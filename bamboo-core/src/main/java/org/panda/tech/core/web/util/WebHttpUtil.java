@@ -57,6 +57,31 @@ public class WebHttpUtil {
     }
 
     /**
+     * 直接重定向至指定URL。请求将被重置，POST请求参数将丢失，浏览器地址栏显示的URL将更改为指定URL。
+     * URL如果为绝对路径，则必须以http://或https://开头
+     *
+     * @param url
+     *            URL
+     * @throws IOException
+     *             如果重定向时出现IO错误
+     */
+    public static void redirect(HttpServletRequest request, HttpServletResponse response,
+                                String url) throws IOException {
+        String location = url;
+        if (!location.toLowerCase().startsWith("http://")
+                && !location.toLowerCase().startsWith("https://")) {
+            if (!location.startsWith(Strings.SLASH)) {
+                location = Strings.SLASH + location;
+            }
+            String webRoot = request.getContextPath();
+            if (!location.startsWith(webRoot)) {
+                location = webRoot + location;
+            }
+        }
+        response.sendRedirect(location);
+    }
+
+    /**
      * 获取指定request请求中的所有参数的map集合
      *
      * @param request                请求
