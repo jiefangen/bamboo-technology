@@ -32,16 +32,17 @@ public class RequestLogFilter implements Filter {
             throws IOException, ServletException {
         if (ArrayUtils.isNotEmpty(this.urlPatterns)) {
             HttpServletRequest request = (HttpServletRequest) req;
+            // 提前包装request请求，即使不符合打印规则后续操作中也可重复读取
+            request = new BodyRepeatableRequestWrapper(request);
             String url = WebHttpUtil.getRelativeRequestUrl(request);
             if (StringUtil.antPathMatchOneOf(url, this.urlPatterns)) {
-                request = new BodyRepeatableRequestWrapper(request);
                 this.logger.info("====== request from {} ======", WebHttpUtil.getRemoteAddress(request));
                 this.logger.info("{} {}", request.getMethod(), url);
                 this.logger.info("headers: {}", JsonUtil.toJson(WebHttpUtil.getHeaders(request)));
                 this.logger.info("parameters: {}", JsonUtil.toJson(WebHttpUtil.getRequestParameterMap(request)));
                 this.logger.info("body: {}", WebHttpUtil.getRequestBodyString(request));
-                req = request;
             }
+            req = request;
         }
         chain.doFilter(req, resp);
     }

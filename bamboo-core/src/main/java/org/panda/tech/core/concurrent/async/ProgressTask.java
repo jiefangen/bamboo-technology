@@ -1,4 +1,4 @@
-package org.panda.tech.core.jwt.concurrent.async;
+package org.panda.tech.core.concurrent.async;
 
 /**
  * 可获取进度的任务

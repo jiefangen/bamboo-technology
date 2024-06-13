@@ -1,4 +1,4 @@
-package org.panda.tech.core.jwt.concurrent;
+package org.panda.tech.core.concurrent;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
@@ -14,7 +14,7 @@ public class ExecutorUtil {
     private ExecutorUtil() {
     }
 
-    public static final String DEFAULT_EXECUTOR_BEAN_NAME = "defaultExecutor";
+    public static final String TASK_EXECUTOR_BEAN_NAME = "taskExecutor";
     public static final String SCHEDULED_EXECUTOR_BEAN_NAME = "scheduledExecutor";
     public static final int DEFAULT_CORE_POOL_SIZE = 5;
 

@@ -1,4 +1,4 @@
-package org.panda.tech.core.jwt.concurrent.async;
+package org.panda.tech.core.concurrent.async;
 
 import java.io.Serializable;
 import java.util.Objects;

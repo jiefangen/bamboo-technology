@@ -1,4 +1,4 @@
-package org.panda.tech.core.jwt.concurrent;
+package org.panda.tech.core.concurrent;
 
 import org.panda.bamboo.common.util.LogUtil;
 import org.springframework.beans.factory.DisposableBean;
@@ -15,7 +15,7 @@ public class DefaultThreadPoolExecutor extends ThreadPoolExecutor implements Dis
     private int logPerTaskCount = 10;
 
     public DefaultThreadPoolExecutor(int corePoolSize, int maxPoolSize) {
-        super(corePoolSize, maxPoolSize, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+        super(corePoolSize, maxPoolSize, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         setRejectedExecutionHandler(new CallerRunsPolicy());
         // 允许核心线程空闲超时退出，超时时间默认为10秒
         allowCoreThreadTimeOut(true);
@@ -46,5 +46,4 @@ public class DefaultThreadPoolExecutor extends ThreadPoolExecutor implements Dis
     public void destroy() throws Exception {
         shutdown();
     }
-
 }

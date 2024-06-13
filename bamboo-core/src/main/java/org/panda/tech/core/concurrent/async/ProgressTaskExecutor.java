@@ -1,4 +1,4 @@
-package org.panda.tech.core.jwt.concurrent.async;
+package org.panda.tech.core.concurrent.async;
 
 import org.panda.bamboo.common.util.LogUtil;
 import org.springframework.scheduling.annotation.EnableScheduling;

@@ -1,4 +1,4 @@
-package org.panda.tech.core.jwt.concurrent;
+package org.panda.tech.core.concurrent;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -10,9 +10,9 @@ import java.util.concurrent.ScheduledExecutorService;
 public abstract class ExecutorConfigSupport {
 
     @Primary
-    @Bean(name = ExecutorUtil.DEFAULT_EXECUTOR_BEAN_NAME, destroyMethod = "shutdown")
-    @ConditionalOnMissingBean(name = ExecutorUtil.DEFAULT_EXECUTOR_BEAN_NAME)
-    public ExecutorService defaultExecutor() {
+    @Bean(name = ExecutorUtil.TASK_EXECUTOR_BEAN_NAME, destroyMethod = "shutdown")
+    @ConditionalOnMissingBean(name = ExecutorUtil.TASK_EXECUTOR_BEAN_NAME)
+    public ExecutorService taskExecutor() {
         return ExecutorUtil.buildDefaultExecutor(getCorePoolSize());
     }
 
