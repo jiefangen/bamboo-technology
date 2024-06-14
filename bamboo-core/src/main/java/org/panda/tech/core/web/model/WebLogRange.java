@@ -15,7 +15,7 @@ public class WebLogRange implements Serializable {
     /**
      * 记录开始时间戳
      */
-    private Long startTimeMillis;
+    private long startTimeMillis;
     /**
      * 主机地址
      */

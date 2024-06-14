@@ -48,12 +48,18 @@ public class Times {
      * 格林威治标准时间格式
      */
     public static final String GMT_PATTERN = "EEE, dd MMM yyyy HH:mm:ss 'GMT'";
-
-    public static final long MS_ONE_SECOND = 1000;
-
+    /**
+     * 毫秒级单位
+     */
+    public static final long MS_ONE_SECOND = 1000L;
     public static final long MS_ONE_MINUTE = 60 * MS_ONE_SECOND;
-
     public static final long MS_ONE_HOUR = 60 * MS_ONE_MINUTE;
-
     public static final long MS_ONE_DAY = 24 * MS_ONE_HOUR;
+    /**
+     * 秒级单位
+     */
+    public static final int S_ONE_SECOND = 1;
+    public static final int S_ONE_MINUTE = 60 * S_ONE_SECOND;
+    public static final int S_ONE_HOUR = 60 * S_ONE_MINUTE;
+    public static final int S_ONE_DAY = 24 * S_ONE_HOUR;
 }

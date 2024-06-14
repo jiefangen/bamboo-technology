@@ -16,6 +16,7 @@ public class DefaultThreadPoolExecutor extends ThreadPoolExecutor implements Dis
 
     public DefaultThreadPoolExecutor(int corePoolSize, int maxPoolSize) {
         super(corePoolSize, maxPoolSize, 10, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        // 不在新线程中执行任务，而是由调用者所在的线程来执行
         setRejectedExecutionHandler(new CallerRunsPolicy());
         // 允许核心线程空闲超时退出，超时时间默认为10秒
         allowCoreThreadTimeOut(true);
