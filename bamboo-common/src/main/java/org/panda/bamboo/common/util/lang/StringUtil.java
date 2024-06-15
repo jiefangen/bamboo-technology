@@ -497,7 +497,7 @@ public class StringUtil {
     }
 
     /**
-     * 截取指定字符串，限制其最大长度为指定长度。若最大长度小于0，则返回null
+     * 截取指定字符串，限制其最大长度为指定长度。其以省略号结尾
      *
      * @param s         字符串
      * @param maxLength 允许最大长度
@@ -510,17 +510,28 @@ public class StringUtil {
         if (s.length() <= maxLength) {
             return s;
         } else {
+            // 截取最大长度的子字符串
             s = s.substring(0, maxLength);
             char[] chars = s.toCharArray();
+            // 检查最后一个字符是否为非ASCII字符（汉字等）
             if (chars[chars.length - 1] > 255) {
+                // 如果是，去掉最后一个字符
                 s = s.substring(0, s.length() - 1);
-            } else if (s.length() >= 2) {
-                s = s.substring(0, s.length() - 2);
+            } else if (s.length() >= 3) {
+                // 如果不是，且字符串长度大于等于3，去掉最后三个字符
+                s = s.substring(0, s.length() - 3);
             }
             return s + "...";
         }
     }
 
+    /**
+     * 截取指定字符串，限制其最大长度为指定字节长度。可对标数据库中的长度截取
+     *
+     * @param s 字符串
+     * @param maxBytes 最大字节长度
+     * @return 截取之后的字符串
+     */
     public static String cutForBytes(String s, int maxBytes) {
         // 极限情况下，字符串的每个字符占一个字节，可从最大字节数的长度开始截取
         if (s.length() > maxBytes) {

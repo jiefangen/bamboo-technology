@@ -34,7 +34,7 @@ public abstract class WebLogSupport {
         }
         request = new BodyRepeatableRequestWrapper(request);
         threadInfo.setHost(WebHttpUtil.getRemoteAddress(request));
-        threadInfo.setIdentity(this.getIdentity(request));
+        threadInfo.setIdentity(getIdentity(request));
         String actionTypeValue = EnumValueHelper.getValue(webOperationLog.actionType());
         threadInfo.setActionType(actionTypeValue);
         threadInfo.setBodyStr(WebHttpUtil.getRequestBodyString(request));
