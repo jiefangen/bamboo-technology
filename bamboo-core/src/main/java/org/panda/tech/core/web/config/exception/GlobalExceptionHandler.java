@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public RestfulResult handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public RestfulResult<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         StringBuilder errorMessage = new StringBuilder("Validation errors: ");
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             String fieldName = error.getField();
