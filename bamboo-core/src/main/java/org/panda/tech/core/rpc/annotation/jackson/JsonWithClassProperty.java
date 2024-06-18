@@ -1,4 +1,4 @@
-package org.panda.tech.core.web.mvc.jackson;
+package org.panda.tech.core.rpc.annotation.jackson;
 
 import java.lang.annotation.*;
 
