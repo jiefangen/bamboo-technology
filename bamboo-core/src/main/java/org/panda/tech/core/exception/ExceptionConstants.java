@@ -33,5 +33,4 @@ class ExceptionConstants {
     protected static final String ILLEGAL_TOKEN = "Token verify failure";
     protected static final int TOKEN_EXPIRED_CODE = 4018;
     protected static final String TOKEN_EXPIRED = "Token expired";
-
 }
