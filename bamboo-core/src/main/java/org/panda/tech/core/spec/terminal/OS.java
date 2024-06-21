@@ -17,8 +17,8 @@ public enum OS {
     ANDROID,
 
     @Caption("苹果")
-    @EnumValue("M")
-    MAC,
+    @EnumValue("I")
+    IOS,
 
     @Caption("Linux")
     @EnumValue("X")
@@ -34,8 +34,8 @@ public enum OS {
             return WINDOWS;
         } else if (name.contains(ANDROID.name())) {
             return ANDROID;
-        } else if (name.contains(MAC.name()) || name.contains("IOS")) {
-            return MAC;
+        } else if (name.contains(IOS.name()) || name.contains("IOS")) {
+            return IOS;
         }
         return LINUX;
     }
