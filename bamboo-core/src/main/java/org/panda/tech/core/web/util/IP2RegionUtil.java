@@ -27,9 +27,12 @@ public class IP2RegionUtil {
      * @return 区域信息
      */
     public static String getIPRegion(String ip) {
+        if (NetUtil.isLocalHost(ip)) { // 本地IP判断
+            return "0|0|0|本地IP|本地IP";
+        }
         try {
-            String dbPath = CommonUtil.getCurrentPath(IP2RegionUtil.class) + Strings.SLASH + Commons.PROJECT_RES_PATH
-                    + IP_XDB_PATH;
+            String dbPath = CommonUtil.getCurrentPath(IP2RegionUtil.class) + Strings.SLASH
+                    + Commons.PROJECT_RES_PATH + IP_XDB_PATH;
             // 创建 searcher 对象
             Searcher searcher = Searcher.newWithFileOnly(dbPath);
             String region = searcher.search(ip);

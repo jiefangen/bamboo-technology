@@ -1,15 +1,13 @@
 package org.panda.tech.core.util.http;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
+import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.*;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.model.tuple.Binary;
@@ -19,6 +17,7 @@ import org.panda.tech.core.web.util.NetUtil;
 import org.springframework.http.HttpMethod;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -34,8 +33,13 @@ public class HttpClientUtil {
     private HttpClientUtil() {
     }
 
+    public static String execute(HttpUriRequest request, String encoding) throws IOException {
+        CloseableHttpResponse response = HTTP_CLIENT.execute(request);
+        return EntityUtils.toString(response.getEntity(), encoding);
+    }
+
     @SuppressWarnings("unchecked")
-    private static CloseableHttpResponse execute(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
+    private static CloseableHttpResponse execute(HttpMethod method, String url, Map<String, Object> params, Object body,
                                                  Map<String, String> headers, String encoding) throws Exception {
         if (params != null && !params.isEmpty()) {
             url = NetUtil.mergeParams(url, params, Strings.ENCODING_UTF8);
@@ -47,16 +51,16 @@ public class HttpClientUtil {
                 break;
             case POST:
                 HttpPost httpPost = new HttpPost(url);
-                if (bodyParams != null) {
-                    httpPost.setEntity(new StringEntity(JsonUtil.toJson(bodyParams),
+                if (body != null) {
+                    httpPost.setEntity(new StringEntity(JsonUtil.toJson(body),
                             ContentType.create(ContentType.APPLICATION_JSON.getMimeType(), encoding)));
                 }
                 request = httpPost;
                 break;
             case PUT:
                 HttpPut httpPut = new HttpPut(url);
-                if (bodyParams != null) {
-                    httpPut.setEntity(new StringEntity(JsonUtil.toJson(bodyParams),
+                if (body != null) {
+                    httpPut.setEntity(new StringEntity(JsonUtil.toJson(body),
                             ContentType.create(ContentType.APPLICATION_JSON.getMimeType(), encoding)));
                 }
                 request = httpPut;
@@ -83,11 +87,11 @@ public class HttpClientUtil {
         return null;
     }
 
-    public static Binary<Integer, String> request(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
+    public static Binary<Integer, String> request(HttpMethod method, String url, Map<String, Object> params, Object body,
                                                   Map<String, String> headers, String encoding) throws Exception {
         CloseableHttpResponse response = null;
         try {
-            response = execute(method, url, params, bodyParams, headers, encoding);
+            response = execute(method, url, params, body, headers, encoding);
             if (response != null) {
                 int statusCode = response.getStatusLine().getStatusCode();
                 String content = EntityUtils.toString(response.getEntity(), encoding);
@@ -104,8 +108,39 @@ public class HttpClientUtil {
         return null;
     }
 
+    public static String commonRequest(HttpMethod method, String url, Map<String, Object> params, Object body,
+                                       Map<String, String> headers) throws Exception {
+        Binary<Integer, String> resBinary = request(method, url, params, body, headers, Strings.ENCODING_UTF8);
+        return resBinary == null ? null : resBinary.getRight();
+    }
+
+    public static String requestByGet(String url, Map<String, Object> params, Map<String, String> headers)
+            throws Exception {
+        return commonRequest(HttpMethod.GET, url, params,null, headers);
+    }
+
+    public static String requestByPost(String url, Object bodyParams, Map<String, String> headers)
+            throws Exception {
+        return commonRequest(HttpMethod.POST, url, null, bodyParams, headers);
+    }
+
+    public static InputStream getImageByPostJson(String url, Map<String, Object> params) {
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.addHeader(HTTP.CONTENT_TYPE, "application/json");
+        try {
+            StringEntity entity = new StringEntity(JsonUtil.toJson(params));
+            entity.setContentType("image/png"); // png比jpg具有更大的适应性，固定为png
+            httpPost.setEntity(entity);
+            HttpResponse response = HTTP_CLIENT.execute(httpPost);
+            return response.getEntity().getContent();
+        } catch (Exception e) {
+            LogUtil.error(HttpClientUtil.class, e);
+        }
+        return null;
+    }
+
     public static void download(String url, Map<String, Object> params, Map<String, String> headers,
-            BiConsumer<HttpEntity, Map<String, String>> consumer) throws IOException {
+                                BiConsumer<HttpEntity, Map<String, String>> consumer) throws IOException {
         try (CloseableHttpResponse response = execute(HttpMethod.GET, url, params, null, headers, Strings.ENCODING_UTF8)) {
             if (response != null) {
                 StatusLine statusLine = response.getStatusLine();
@@ -130,21 +165,5 @@ public class HttpClientUtil {
             }
             LogUtil.error(HttpClientUtil.class, e);
         }
-    }
-
-    public static String commonRequest(HttpMethod method, String url, Map<String, Object> params, Object bodyParams,
-                                       Map<String, String> headers) throws Exception {
-        Binary<Integer, String> resBinary = request(method, url, params, bodyParams, headers, Strings.ENCODING_UTF8);
-        return resBinary == null ? null : resBinary.getRight();
-    }
-
-    public static String requestByGet(String url, Map<String, Object> params, Map<String, String> headers)
-            throws Exception {
-        return commonRequest(HttpMethod.GET, url, params,null, headers);
-    }
-
-    public static String requestByPost(String url, Object bodyParams, Map<String, String> headers)
-            throws Exception {
-        return commonRequest(HttpMethod.POST, url, null, bodyParams, headers);
     }
 }

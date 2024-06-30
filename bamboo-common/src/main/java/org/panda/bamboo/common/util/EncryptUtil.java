@@ -211,4 +211,23 @@ public class EncryptUtil {
         return null;
     }
 
+    public static String encryptBySha1(Object source) {
+        try {
+            byte[] data = toBytes(source);
+            MessageDigest digest = MessageDigest.getInstance("SHA-1");
+            digest.update(data);
+            byte[] digestBytes = digest.digest();
+            StringBuilder s = new StringBuilder();
+            for (byte digestByte : digestBytes) {
+                String shaHex = Integer.toHexString(digestByte & 0xFF);
+                if (shaHex.length() < 2) {
+                    s.append(0);
+                }
+                s.append(shaHex);
+            }
+            return s.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
