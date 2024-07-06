@@ -28,9 +28,10 @@ public class AuthConstants {
      * 账户登出
      */
     public static final int LOGGED_OUT = 5006;
-    public static final String LOGGED_OUT_REASON = "Maybe the server restarted or some other reasons.";
+    public static final String LOGGED_OUT_REASON = "The account has been logged out.";
     /**
      * 其它客户端登入
      */
     public static final Integer OTHER_CLIENTS_LOGGED_IN = 5012;
+    public static final String CLIENTS_UNKNOWN_REASON = "Maybe the server restarted or some other reasons.";
 }
