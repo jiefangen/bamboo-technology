@@ -20,8 +20,7 @@ public class QueryPageHelper {
      * @param <T> 结果数据类型
      */
     public static <T> QueryResult<T> convertQueryResult(List<T> records, IPage page) {
-        QueryResult<T> queryResult = QueryResult.of(records, (int)page.getSize(), (int)page.getCurrent(), page.getTotal());
-        return queryResult;
+        return QueryResult.of(records, (int)page.getSize(), (int)page.getCurrent(), page.getTotal());
     }
 
     /**
@@ -32,7 +31,6 @@ public class QueryPageHelper {
      * @param <T> 结果数据类型
      */
     public static <T> QueryResult<T> convertQueryResult(IPage page) {
-        QueryResult<T> queryResult = QueryResult.of(page.getRecords(), (int)page.getSize(), (int)page.getCurrent(), page.getTotal());
-        return queryResult;
+        return QueryResult.of(page.getRecords(), (int)page.getSize(), (int)page.getCurrent(), page.getTotal());
     }
 }

@@ -32,7 +32,7 @@
         <!-- 消息队列模块-为上层服务提供RocketMQ使用准则 -->
         <module>bamboo-mq-rocketmq</module>
         <!-- 服务安全shiro模块-为上层服务提供鉴权标准 -->
-        <module>bamboo-security-shiro</module>
+        <module>bamboo-shiro</module>
     </modules>
 
     <properties>
