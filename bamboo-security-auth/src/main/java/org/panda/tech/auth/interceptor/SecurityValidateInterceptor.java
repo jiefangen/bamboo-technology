@@ -1,22 +1,22 @@
 package org.panda.tech.auth.interceptor;
 
 import org.apache.commons.lang3.StringUtils;
+import org.panda.bamboo.common.util.LogUtil;
+import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.tech.auth.annotation.Accessibility;
-import org.panda.tech.auth.authority.Authority;
 import org.panda.tech.auth.mgt.SubjectManager;
 import org.panda.tech.auth.subject.Subject;
 import org.panda.tech.core.exception.business.BusinessException;
 import org.panda.tech.core.util.UrlPatternMatchSupport;
+import org.panda.tech.core.web.config.security.WebSecurityProperties;
 import org.panda.tech.core.web.util.NetUtil;
 import org.panda.tech.core.web.util.WebHttpUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.ServletException;
@@ -24,19 +24,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.List;
 
 /**
  * 安全校验拦截器
  *
  * @author fangen
  */
+@Component
 public class SecurityValidateInterceptor extends UrlPatternMatchSupport implements HandlerInterceptor {
     /**
      * 请求转发的前缀
      */
     public static String FORWARD_PREFIX = "forward:";
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private SubjectManager subjectManager;
 
@@ -44,7 +44,8 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
 
     private String loginUrl;
 
-    private Menu menu;
+    @Autowired(required = false)
+    private WebSecurityProperties securityProperties;
 
     @Autowired
     public void setSubjectManager(SubjectManager subjectManager) {
@@ -52,7 +53,6 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
     }
 
     /**
-     *
      * @param userClass 要拦截的用户类型，如果整个系统只有一种用户类型，则可以不设置
      */
     public void setUserClass(Class<?> userClass) {
@@ -60,7 +60,6 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
     }
 
     /**
-     *
      * @param loginUrl 未登录时试图访问需登录才能访问的资源时，跳转至的登录页面URL，可通过{0}附带上原访问链接
      */
     public void setLoginUrl(String loginUrl) {
@@ -82,8 +81,7 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                             Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 请求为include请求则忽略当前拦截器
         if (WebUtils.isIncludeRequest(request)) {
             return true;
@@ -92,14 +90,13 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
         if (matches(url)) { // URL匹配才进行校验
             // 校验Accessibility注解限制
             if (handler instanceof HandlerMethod) {
-                Accessibility accessibility = ((HandlerMethod) handler)
-                        .getMethodAnnotation(Accessibility.class);
+                Accessibility accessibility = ((HandlerMethod) handler).getMethodAnnotation(Accessibility.class);
                 // 局域网访问限制校验
                 if (accessibility != null) {
                     if (accessibility.lan()) {
                         String ip = WebHttpUtil.getRemoteAddress(request);
                         if (!NetUtil.isIntranetIp(ip)) {
-                            this.logger.warn("Forbidden request {} from {}", url, ip);
+                            LogUtil.warn(getClass(), "Forbidden request {} from {}", url, ip);
                             response.sendError(HttpStatus.FORBIDDEN.value()); // 禁止非局域网访问
                             return false;
                         }
@@ -110,13 +107,13 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
                     }
                 }
             }
-            // 校验菜单权限
+            // 校验资源权限
             Class<?> userClass = getUserClass(request, response);
             Subject subject = this.subjectManager.getSubject(request, response, userClass);
             if (subject != null) { // 能取得subject才进行校验
                 HttpMethod method = HttpMethod.valueOf(request.getMethod());
-                // 配置菜单中当前链接允许匿名访问，则跳过不作限制
-                if (this.menu != null && this.menu.isAnonymous(url, method)) {
+                // 忽略资源，则跳过不作限制
+                if (this.securityProperties != null && this.isAnonymous(url)) {
                     return true;
                 }
                 // 登录校验
@@ -130,6 +127,18 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
             }
         }
         return true;
+    }
+
+    protected boolean isAnonymous(String url) {
+        List<String> ignoringPatterns = this.securityProperties.getIgnoringPatterns();
+        if (!ignoringPatterns.isEmpty()) {
+            for (String ignoringPattern : ignoringPatterns) {
+                if (StringUtil.antPathMatchOneOf(url, ignoringPattern)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     protected boolean validateLogin(Subject subject, HttpServletRequest request,
@@ -155,11 +164,11 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
 
     protected boolean validateAuthority(String url, HttpMethod method, Subject subject,
                                         HttpServletRequest request) throws BusinessException {
-        if (this.menu != null) {
-            Authority authority = this.menu.getAuthority(url, method);
-            // 此时授权可能为null，为null时将被视为无访问权限，意味着在配置有菜单的系统中，URL访问均应在菜单配置中进行配置
-            subject.validateAuthority(authority);
-        }
+//        if (this.menu != null) {
+//            Authority authority = this.menu.getAuthority(url, method);
+//            // 此时授权可能为null，为null时将被视为无访问权限，意味着在配置有菜单的系统中，URL访问均应在菜单配置中进行配置
+//            subject.validateAuthority(authority);
+//        }
         return true;
     }
 
@@ -167,16 +176,6 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
     protected boolean matches(String url) {
         // 始终排除RPC访问
         return !url.startsWith("/rpc/") && super.matches(url);
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-                           ModelAndView modelAndView) throws Exception {
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
-                                Object handler, Exception ex) {
     }
 
 }

@@ -155,8 +155,7 @@ public class DefaultSecurityManager implements SecurityManager, ContextInitializ
             if (reset) {
                 session.removeAttribute(authorizationSessionName);
             }
-            AuthorizationInfo ai = (AuthorizationInfo) session
-                    .getAttribute(authorizationSessionName);
+            AuthorizationInfo ai = (AuthorizationInfo) session.getAttribute(authorizationSessionName);
             if (ai == null) {
                 Object user = getUser(subject, false);
                 if (user != null) {

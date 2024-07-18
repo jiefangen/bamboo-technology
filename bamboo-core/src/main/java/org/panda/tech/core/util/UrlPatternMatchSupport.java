@@ -50,7 +50,6 @@ public class UrlPatternMatchSupport {
                 return true;
             }
         }
-
         return false;
     }
 

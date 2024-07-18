@@ -23,7 +23,7 @@ public class Authority {
     /**
      * 登录即可访问的权限
      */
-    public static final Authority LOGINED = new Authority(":logined", null);
+    public static final Authority LOGINED = new Authority(":LOGINED", null);
 
     public Authority(String role, String permission) {
         this.role = role;
