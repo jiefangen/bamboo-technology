@@ -16,7 +16,7 @@ public class DefaultLoginInfo implements LoginInfo {
 
     private List<Cookie> cookies = new ArrayList<>();
 
-    public DefaultLoginInfo(final Object user) {
+    public DefaultLoginInfo(Object user) {
         this.user = user;
     }
 

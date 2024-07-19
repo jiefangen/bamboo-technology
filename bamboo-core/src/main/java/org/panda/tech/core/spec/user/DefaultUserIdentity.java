@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class DefaultUserIdentity implements IntegerUserIdentity {
 
-    private static final long serialVersionUID = -1645870192351832325L;
+    private static final long serialVersionUID = -4599368119996542057L;
 
     private String type;
     private Integer id;

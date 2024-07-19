@@ -2,10 +2,12 @@ package org.panda.tech.core.web.context;
 
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +32,20 @@ public class SpringWebContext {
             return ((ServletRequestAttributes) requestAttributes).getRequest();
         }
         return null;
+    }
+
+    /**
+     * 获取web项目应用范围内的ApplicationContext实例
+     *
+     * @param request HTTP请求
+     * @return ApplicationContext实例
+     */
+    public static ApplicationContext getApplicationContext(final HttpServletRequest request) {
+        try {
+            return RequestContextUtils.findWebApplicationContext(request);
+        } catch (IllegalStateException e) {
+            return null;
+        }
     }
 
     public static Locale getLocale() {

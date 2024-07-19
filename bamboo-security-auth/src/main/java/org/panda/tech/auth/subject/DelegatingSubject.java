@@ -61,23 +61,23 @@ public class DelegatingSubject implements Subject {
     }
 
     @Override
-    public void login(final AuthenticationToken token) throws HandleableException {
+    public void login(AuthenticationToken token) throws HandleableException {
         this.securityManager.login(this, token);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends Authorization> T getAuthorization(final boolean reset) {
+    public <T extends Authorization> T getAuthorization(boolean reset) {
         return (T) this.securityManager.getAuthorization(this, reset);
     }
 
     @Override
-    public boolean isAuthorized(final Authority authority) {
+    public boolean isAuthorized(Authority authority) {
         return this.securityManager.isAuthorized(this, authority);
     }
 
     @Override
-    public void validateAuthority(final Authority authority) throws BusinessException {
+    public void validateAuthority(Authority authority) throws BusinessException {
         this.securityManager.validateAuthority(this, authority);
     }
 

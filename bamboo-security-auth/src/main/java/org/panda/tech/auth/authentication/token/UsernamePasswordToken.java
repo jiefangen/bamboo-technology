@@ -7,7 +7,8 @@ import org.panda.tech.core.spec.user.UsernamePassword;
  *
  * @author fangen
  */
-public class UsernamePasswordToken extends UsernamePassword implements RememberMeAuthenticationToken, HostAuthenticationToken {
+public class UsernamePasswordToken extends UsernamePassword
+        implements RememberMeAuthenticationToken, HostAuthenticationToken {
 
     private boolean rememberMe;
 
