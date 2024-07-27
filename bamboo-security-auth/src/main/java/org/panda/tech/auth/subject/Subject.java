@@ -11,10 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 类似Shiro中的Subject，用于表示一个用户的相关信息
+ * <T> 用户类型
  *
  * @author fangen
- * @param <T>
- *            用户类型
  */
 public interface Subject {
 

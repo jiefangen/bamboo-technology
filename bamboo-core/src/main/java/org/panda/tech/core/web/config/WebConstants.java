@@ -61,6 +61,10 @@ public class WebConstants {
      * 头信息名：鉴权账户加密凭证
      */
     public static final String HEADER_AUTH_CREDENTIALS = "Credentials";
+    /**
+     * 头信息名，APP来源
+     */
+    public static final String HEADER_SOURCE = "App-Source";
 
     /**
      * 默认的跳转目标参数

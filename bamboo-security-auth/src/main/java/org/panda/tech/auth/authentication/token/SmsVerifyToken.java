@@ -3,7 +3,7 @@ package org.panda.tech.auth.authentication.token;
 import org.panda.bamboo.common.model.tuple.Binary;
 
 /**
- * 手机号+验证码形式的登录Token，类似Shiro中的UsernamePasswordToken
+ * 手机号+验证码形式的登录Token
  *
  * @author fangen
  */
@@ -29,7 +29,7 @@ public class SmsVerifyToken implements RememberMeAuthenticationToken, HostAuthen
     }
 
     public Binary<Long, String> getBinary() {
-        return new Binary<Long, String>(this.verifyId, this.code);
+        return new Binary<>(this.verifyId, this.code);
     }
 
     public Long getVerifyId() {

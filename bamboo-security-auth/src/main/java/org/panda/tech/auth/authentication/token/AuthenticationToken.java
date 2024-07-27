@@ -9,7 +9,7 @@ public interface AuthenticationToken {
 
     /**
      *
-     * @return 能唯一表示一个用户的标识，一般为用户名
+     * @return 能唯一表示一个用户的标识
      */
     Object getPrincipal();
 

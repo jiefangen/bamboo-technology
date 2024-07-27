@@ -19,6 +19,7 @@ import org.panda.tech.core.exception.business.BusinessException;
 import org.panda.tech.core.exception.business.HandleableException;
 import org.panda.tech.core.web.util.WebHttpUtil;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import javax.servlet.http.Cookie;
@@ -32,6 +33,7 @@ import java.util.*;
  *
  * @author fangen
  */
+@Component
 public class DefaultSecurityManager implements SecurityManager, ContextInitializedBean {
 
     private Map<Class<?>, Realm<?>> realms = new HashMap<>();
@@ -43,8 +45,7 @@ public class DefaultSecurityManager implements SecurityManager, ContextInitializ
         for (Realm<?> realm : beans.values()) {
             Class<?> userClass = realm.getUserClass();
             // 一个用户类型只能有一个Realm
-            Assert.isNull(this.realms.put(userClass, realm),
-                    "one userClass can only have one realm");
+            Assert.isNull(this.realms.put(userClass, realm), "one userClass can only have one realm");
         }
     }
 

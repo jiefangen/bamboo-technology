@@ -3,7 +3,7 @@ package org.panda.tech.auth;
 import org.springframework.context.annotation.ComponentScan;
 
 /**
- * 安全鉴权Shiro组件自动扫描机制
+ * 安全鉴权组件自动扫描机制
  *
  * @author fangen
  **/
