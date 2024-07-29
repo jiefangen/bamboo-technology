@@ -29,8 +29,8 @@ public class LoginAuthenticationFilter extends UsernamePasswordAuthenticationFil
     }
 
     public LoginAuthenticationFilter(ApplicationContext context) {
-        AjaxAuthenticationSuccessHandler successHandler = SpringUtil.getFirstBeanByClass(context,
-                AjaxAuthenticationSuccessHandler.class);
+        DefaultAuthenticationSuccessHandler successHandler = SpringUtil.getFirstBeanByClass(context,
+                DefaultAuthenticationSuccessHandler.class);
         if (successHandler != null) {
             setAuthenticationSuccessHandler(successHandler);
         }

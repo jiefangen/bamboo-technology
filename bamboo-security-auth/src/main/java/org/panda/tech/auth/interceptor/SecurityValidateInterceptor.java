@@ -6,9 +6,11 @@ import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.tech.auth.annotation.Accessibility;
 import org.panda.tech.auth.mgt.SubjectManager;
 import org.panda.tech.auth.subject.Subject;
+import org.panda.tech.core.exception.ExceptionEnum;
 import org.panda.tech.core.exception.business.BusinessException;
 import org.panda.tech.core.util.UrlPatternMatchSupport;
 import org.panda.tech.core.web.config.security.WebSecurityProperties;
+import org.panda.tech.core.web.restful.RestfulResult;
 import org.panda.tech.core.web.util.NetUtil;
 import org.panda.tech.core.web.util.WebHttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,8 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
      */
     public static String FORWARD_PREFIX = "forward:";
 
+    private WebSecurityProperties securityProperties;
+
     private SubjectManager subjectManager;
 
     private Class<?> userClass;
@@ -45,7 +49,9 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
     private String loginUrl;
 
     @Autowired(required = false)
-    private WebSecurityProperties securityProperties;
+    public void setWebSecurityProperties(WebSecurityProperties securityProperties) {
+        this.securityProperties = securityProperties;
+    }
 
     @Autowired
     public void setSubjectManager(SubjectManager subjectManager) {
@@ -113,7 +119,7 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
             if (subject != null) { // 能取得subject才进行校验
                 HttpMethod method = HttpMethod.valueOf(request.getMethod());
                 // 忽略资源，则跳过不作限制
-                if (this.securityProperties != null && this.isAnonymous(url)) {
+                if (this.isAnonymous(url)) {
                     return true;
                 }
                 // 登录校验
@@ -145,8 +151,10 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
                                     HttpServletResponse response) throws ServletException, IOException {
         if (!subject.isLogined()) {
             // 未登录且不允许匿名访问
-            if (WebHttpUtil.isAjaxRequest(request) || StringUtils.isBlank(this.loginUrl)) { // AJAX请求未登录或未指定登录页面地址时，返回错误状态
+            if (StringUtils.isBlank(this.loginUrl)) { // AJAX请求未登录或未指定登录页面地址时，返回错误状态
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                Object obj = RestfulResult.getFailure(ExceptionEnum.UNAUTHORIZED);
+                WebHttpUtil.buildJsonResponse(response, obj);
             } else { // 普通请求未登录且已指定登录页面地址时，跳转至登录页面
                 String originalUrl = WebHttpUtil.getRelativeRequestUrlWithQueryString(request, true);
                 String loginUrl = MessageFormat.format(this.loginUrl, originalUrl);

@@ -20,15 +20,11 @@ public class AccessDeniedBusinessExceptionHandler extends AccessDeniedHandlerImp
     public void handle(HttpServletRequest request, HttpServletResponse response,
             AccessDeniedException accessDeniedException) throws IOException, ServletException {
         // 异常处理器
-        if (WebHttpUtil.isAjaxRequest(request)) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            if (accessDeniedException.getCause() instanceof NoOperationAuthorityException) {
-                NoOperationAuthorityException exception = (NoOperationAuthorityException) accessDeniedException.getCause();
-                Object obj = RestfulResult.failure(exception.getCode(), exception.getMessage());
-                WebHttpUtil.buildJsonResponse(response, obj);
-            }
-        } else {
-            super.handle(request, response, accessDeniedException);
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        if (accessDeniedException.getCause() instanceof NoOperationAuthorityException) {
+            NoOperationAuthorityException exception = (NoOperationAuthorityException) accessDeniedException.getCause();
+            Object obj = RestfulResult.failure(exception.getCode(), exception.getMessage());
+            WebHttpUtil.buildJsonResponse(response, obj);
         }
     }
 

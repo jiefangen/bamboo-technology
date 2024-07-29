@@ -844,10 +844,6 @@ public class WebHttpUtil {
         if ("XMLHttpRequest".equalsIgnoreCase(request.getHeader(WebConstants.HEADER_AJAX_REQUEST))) {
             return true;
         }
-        String referer = request.getHeader(WebConstants.HEADER_REFERER);
-        if (referer != null && (referer.endsWith("/swagger-ui.html") || referer.endsWith("/doc.html"))) {
-            return true;
-        }
         return false;
     }
 

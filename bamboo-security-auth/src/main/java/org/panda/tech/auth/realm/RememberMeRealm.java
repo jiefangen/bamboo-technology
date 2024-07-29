@@ -18,6 +18,17 @@ public interface RememberMeRealm<T> extends Realm<T> {
      *            当前所有cookie
      * @return 登录用户，如果登录验证不通过则返回null
      */
-    T getLoginUser(String host, Cookie[] cookies);
+    default T getLoginUser(String host, Cookie[] cookies) {
+        return null;
+    }
+
+    /**
+     * 根据token获取登录用户
+     *
+     * @param token
+     *            交互凭证
+     * @return 登录用户，如果登录验证不通过则返回null
+     */
+    T getLoginUser(String token);
 
 }

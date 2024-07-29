@@ -17,6 +17,7 @@ import org.panda.tech.auth.subject.DelegatingSubject;
 import org.panda.tech.auth.subject.Subject;
 import org.panda.tech.core.exception.business.BusinessException;
 import org.panda.tech.core.exception.business.HandleableException;
+import org.panda.tech.core.web.config.WebConstants;
 import org.panda.tech.core.web.util.WebHttpUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -89,16 +90,20 @@ public class DefaultSecurityManager implements SecurityManager, ContextInitializ
                 Object user = session.getAttribute(realm.getUserSessionName());
                 // 如果从会话中无法取得用户，则尝试自动登录验证
                 if (user == null && auto && realm instanceof RememberMeRealm) {
-                    String host = WebHttpUtil.getRemoteAddress(request);
-                    String cookiePath = request.getContextPath();
-                    Cookie[] cookies = filterCookies(request.getCookies(), cookiePath);
-                    user = ((RememberMeRealm<?>) realm).getLoginUser(host, cookies);
-                    session.setAttribute(realm.getUserSessionName(), user);
-                    // cookie可能被修改，重新回写以生效
-                    for (Cookie cookie : cookies) {
-                        cookie.setPath(cookiePath); // 统一路径以便于删除
-                        subject.getServletResponse().addCookie(cookie);
+                    String jwt = request.getHeader(WebConstants.HEADER_AUTH_JWT);
+                    user = ((RememberMeRealm<?>) realm).getLoginUser(jwt);
+                    if (user == null) {
+                        String host = WebHttpUtil.getRemoteAddress(request);
+                        String cookiePath = request.getContextPath();
+                        Cookie[] cookies = filterCookies(request.getCookies(), cookiePath);
+                        user = ((RememberMeRealm<?>) realm).getLoginUser(host, cookies);
+                        // cookie可能被修改，重新回写以生效
+                        for (Cookie cookie : cookies) {
+                            cookie.setPath(cookiePath); // 统一路径以便于删除
+                            subject.getServletResponse().addCookie(cookie);
+                        }
                     }
+                    session.setAttribute(realm.getUserSessionName(), user);
                 }
                 return user;
             }
