@@ -20,6 +20,10 @@ public enum OS {
     @EnumValue("I")
     IOS,
 
+    @Caption("苹果电脑")
+    @EnumValue("M")
+    MAC,
+
     @Caption("Linux")
     @EnumValue("X")
     LINUX,
