@@ -36,6 +36,11 @@ public class BusinessException extends AbstractRuntimeException {
         this.code = code;
     }
 
+    public BusinessException(ExceptionEnum exceptionEnum) {
+        super(exceptionEnum.getMessage());
+        this.code = exceptionEnum.getCode();
+    }
+
     public Integer getCode() {
         return this.code;
     }

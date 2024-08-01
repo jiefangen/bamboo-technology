@@ -1,4 +1,4 @@
-package org.panda.tech.core.web.config.annotation;
+package org.panda.tech.core.spec.log.annotation;
 
 import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.tech.core.spec.log.ActionType;

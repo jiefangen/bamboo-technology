@@ -54,9 +54,10 @@ public class RedisDistributedLock {
         try {
             Lock lock = obtainLock(lockKey);
             lock.unlock();
-            redisLockRegistry.expireUnusedOlderThan(RedisConstants.DEFAULT_EXPIRE_UNUSED);
         } catch (Exception e) {
             LogUtil.error(getClass(), "Distributed lock [{}] release exception {}", lockKey, e);
+        } finally {
+            redisLockRegistry.expireUnusedOlderThan(RedisConstants.DEFAULT_EXPIRE_UNUSED);
         }
     }
 

@@ -1,22 +1,24 @@
-package org.panda.tech.core.web.support;
+package org.panda.tech.core.spec.log.support;
 
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.panda.bamboo.common.annotation.helper.EnumValueHelper;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.jackson.JsonUtil;
-import org.panda.tech.core.web.config.annotation.WebOperationLog;
+import org.panda.tech.core.spec.log.annotation.WebOperationLog;
 import org.panda.tech.core.web.context.SpringWebContext;
 import org.panda.tech.core.web.model.WebLogRange;
 import org.panda.tech.core.web.mvc.servlet.http.BodyRepeatableRequestWrapper;
 import org.panda.tech.core.web.util.WebHttpUtil;
 import org.slf4j.Logger;
+import org.springframework.core.annotation.Order;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * Web日志操作记录支持
  */
+@Order(0)
 public abstract class WebLogSupport {
     private static final Logger LOGGER = LogUtil.getLogger(WebLogSupport.class);
 

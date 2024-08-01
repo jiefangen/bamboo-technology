@@ -8,6 +8,10 @@ import org.panda.tech.core.web.restful.Result;
 @AllArgsConstructor
 public enum ExceptionEnum implements Result {
     /**
+     * 系统异常
+     */
+    SYSTEM(ExceptionConstants.ERROR_SYSTEM_CODE, ExceptionConstants.EXCEPTION_SYSTEM),
+    /**
      * 业务异常
      */
     BUSINESS(ExceptionConstants.EXCEPTION_BUSINESS_CODE, ExceptionConstants.EXCEPTION_BUSINESS),
@@ -37,6 +41,11 @@ public enum ExceptionEnum implements Result {
      * 没有操作权限异常
      */
     AUTH_NO_OPERA(ExceptionConstants.FORBIDDEN_CODE, ExceptionConstants.FORBIDDEN),
+
+    /**
+     * 拦截锁
+     */
+    INTERCEPT_LOCK(ExceptionConstants.INTERCEPT_LOCK_CODE, ExceptionConstants.INTERCEPT_LOCK),
     ;
 
     private int code;

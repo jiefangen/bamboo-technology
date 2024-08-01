@@ -9,6 +9,11 @@ class ExceptionConstants {
     }
 
     /**
+     * 系统错误
+     */
+    protected static final int ERROR_SYSTEM_CODE = 5000;
+    protected static final String EXCEPTION_SYSTEM = "System error";
+    /**
      * 通用业务异常
      */
     protected static final int EXCEPTION_BUSINESS_CODE = 5100;
@@ -28,9 +33,17 @@ class ExceptionConstants {
     protected static final String UNAUTHORIZED = "Unauthorized exception";
     protected static final int FORBIDDEN_CODE = 4030;
     protected static final String FORBIDDEN = "No operation authority exception";
-
+    /**
+     * Token异常
+     */
     protected static final int ILLEGAL_TOKEN_CODE = 4014;
     protected static final String ILLEGAL_TOKEN = "Token verify failure";
     protected static final int TOKEN_EXPIRED_CODE = 4018;
     protected static final String TOKEN_EXPIRED = "Token expired";
+
+    /**
+     * 拦截锁
+     */
+    protected static final int INTERCEPT_LOCK_CODE = 4020;
+    protected static final String INTERCEPT_LOCK = "Your operation was too fast, please try again later";
 }
