@@ -3,6 +3,7 @@ package org.panda.tech.data.redis.config;
 import org.apache.commons.lang3.StringUtils;
 import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.tech.data.redis.RedisConstants;
+import org.panda.tech.data.redis.lock.RedisCacheLock;
 import org.panda.tech.data.redis.lock.RedisDistributedLock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -36,7 +37,13 @@ public abstract class RedisConfigSupport extends RedisTemplateConfigSupport {
     }
 
     @Bean
+    public RedisCacheLock redisCacheLock() {
+        return new RedisCacheLock();
+    }
+
+    @Bean
     public RedisDistributedLock redisDistributedLock() {
         return new RedisDistributedLock();
     }
+
 }
