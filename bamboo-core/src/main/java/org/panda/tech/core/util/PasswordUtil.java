@@ -1,12 +1,11 @@
 package org.panda.tech.core.util;
 
 import org.apache.commons.lang3.StringUtils;
-import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.tech.core.crypto.md5.Md5Encryptor;
 import org.slf4j.Logger;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 public class PasswordUtil {
     private static final Logger LOGGER = LogUtil.getLogger(PasswordUtil.class);
@@ -30,27 +29,22 @@ public class PasswordUtil {
         }
 
         String maskedPassword = mask.substring(0, password.length());
-        String encryptedPassword = password;
-        try {
-            byte[] pwdBytes = password.getBytes(Strings.ENCODING_UTF8);
-            byte[] keyBytes = maskedPassword.getBytes(Strings.ENCODING_UTF8);
+        byte[] pwdBytes = password.getBytes(StandardCharsets.UTF_8);
+        byte[] keyBytes = maskedPassword.getBytes(StandardCharsets.UTF_8);
 
-            for (int i = 0; i < pwdBytes.length; i++) {
-                pwdBytes[i] ^= keyBytes[i];
-            }
-            //mask
-            encryptedPassword = bytes2HexString(pwdBytes);
-
-            Md5Encryptor md5Encryptor = new Md5Encryptor();
-            //1st md5
-            encryptedPassword = md5Encryptor.encrypt(encryptedPassword);
-            //append noise
-            encryptedPassword += encryptedPassword + PASS_NOISE;
-            //2nd md5
-            encryptedPassword = md5Encryptor.encrypt(encryptedPassword);
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.error("encrypt password failed, {}", e.getMessage());
+        for (int i = 0; i < pwdBytes.length; i++) {
+            pwdBytes[i] ^= keyBytes[i];
         }
+        //mask
+        String encryptedPassword = bytes2HexString(pwdBytes);
+
+        Md5Encryptor md5Encryptor = new Md5Encryptor();
+        //1st md5
+        encryptedPassword = md5Encryptor.encrypt(encryptedPassword);
+        //append noise
+        encryptedPassword += encryptedPassword + PASS_NOISE;
+        //2nd md5
+        encryptedPassword = md5Encryptor.encrypt(encryptedPassword);
         return encryptedPassword;
     }
 

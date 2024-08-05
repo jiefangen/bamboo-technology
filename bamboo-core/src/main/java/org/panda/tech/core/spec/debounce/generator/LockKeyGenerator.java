@@ -19,7 +19,7 @@ import java.lang.reflect.Parameter;
  **/
 public class LockKeyGenerator {
 
-    public static String getLockKey(ProceedingJoinPoint joinPoint) {
+    public static String getLockKey(ProceedingJoinPoint joinPoint, String prefix) {
         // 获取连接点的方法签名对象
         MethodSignature methodSignature = (MethodSignature)joinPoint.getSignature();
         Method method = methodSignature.getMethod();
@@ -46,12 +46,12 @@ public class LockKeyGenerator {
             // 循环注解
             for (int i = 0; i < parameterAnnotations.length; i++) {
                 final Object object = args[i];
-                //获取注解类中所有的属性字段
+                // 获取注解类中所有的属性字段
                 final Field[] fields = object.getClass().getDeclaredFields();
                 for (Field field : fields) {
                     // 判断字段上是否有LockKeyParam注解
                     LockKeyParam annotation = field.getAnnotation(LockKeyParam.class);
-                    //如果没有，跳过
+                    // 如果没有，跳过
                     if (annotation == null) {
                         continue;
                     }
@@ -63,6 +63,6 @@ public class LockKeyGenerator {
             }
         }
         // 返回指定前缀的key
-        return requestLock.prefix() + sb;
+        return prefix + sb;
     }
 }

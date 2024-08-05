@@ -10,14 +10,14 @@ import java.util.concurrent.TimeUnit;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RequestLock {
     /**
-     * @return 前缀
-     */
-    String prefix();
-
-    /**
      * @return 失效时间
      */
     long expire();
+
+    /**
+     * @return 前缀
+     */
+    String prefix() default Strings.EMPTY;
 
     /**
      * @return 时间单位

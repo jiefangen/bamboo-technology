@@ -22,11 +22,12 @@ public abstract class RequestLockSupport {
         MethodSignature methodSignature = (MethodSignature)joinPoint.getSignature();
         Method method = methodSignature.getMethod();
         RequestLock requestLock = method.getAnnotation(RequestLock.class);
-        if (StringUtils.isEmpty(requestLock.prefix())) {
-            return RestfulResult.failure("RequestLock prefix cannot be empty");
+        String prefix = requestLock.prefix();
+        if (StringUtils.isEmpty(prefix)) {
+            prefix = method.getName();
         }
         // 获取自定义请求锁key
-        String lockKey = LockKeyGenerator.getLockKey(joinPoint);
+        String lockKey = LockKeyGenerator.getLockKey(joinPoint, prefix);
         if (Boolean.FALSE.equals(isLocked(lockKey, requestLock))) {
             return RestfulResult.getFailure(ExceptionEnum.INTERCEPT_LOCK);
         }
