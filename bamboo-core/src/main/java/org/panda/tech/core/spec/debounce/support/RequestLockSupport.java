@@ -8,6 +8,7 @@ import org.panda.tech.core.exception.business.BusinessException;
 import org.panda.tech.core.spec.debounce.annotation.RequestLock;
 import org.panda.tech.core.spec.debounce.generator.LockKeyGenerator;
 import org.panda.tech.core.web.restful.RestfulResult;
+import org.panda.tech.core.web.restful.ResultEnum;
 import org.springframework.core.annotation.Order;
 
 import java.lang.reflect.Method;
@@ -34,7 +35,7 @@ public abstract class RequestLockSupport {
         try {
             return joinPoint.proceed();
         } catch (Throwable throwable) {
-            throw new BusinessException(ExceptionEnum.SYSTEM);
+            throw new BusinessException(ResultEnum.UNKNOWN);
         }
     }
 

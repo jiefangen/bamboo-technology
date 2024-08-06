@@ -2,6 +2,7 @@ package org.panda.tech.core.exception.business;
 
 import org.panda.bamboo.common.exception.AbstractRuntimeException;
 import org.panda.tech.core.exception.ExceptionEnum;
+import org.panda.tech.core.web.restful.Result;
 
 import java.util.Objects;
 
@@ -36,9 +37,9 @@ public class BusinessException extends AbstractRuntimeException {
         this.code = code;
     }
 
-    public BusinessException(ExceptionEnum exceptionEnum) {
-        super(exceptionEnum.getMessage());
-        this.code = exceptionEnum.getCode();
+    public BusinessException(Result result) {
+        super(result.getMessage());
+        this.code = result.getCode();
     }
 
     public Integer getCode() {

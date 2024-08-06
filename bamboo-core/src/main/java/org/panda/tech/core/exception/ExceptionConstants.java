@@ -9,11 +9,6 @@ class ExceptionConstants {
     }
 
     /**
-     * 系统错误
-     */
-    protected static final int ERROR_SYSTEM_CODE = 5000;
-    protected static final String EXCEPTION_SYSTEM = "System error";
-    /**
      * 通用业务异常
      */
     protected static final int EXCEPTION_BUSINESS_CODE = 5100;

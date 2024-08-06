@@ -8,10 +8,6 @@ import org.panda.tech.core.web.restful.Result;
 @AllArgsConstructor
 public enum ExceptionEnum implements Result {
     /**
-     * 系统异常
-     */
-    SYSTEM(ExceptionConstants.ERROR_SYSTEM_CODE, ExceptionConstants.EXCEPTION_SYSTEM),
-    /**
      * 业务异常
      */
     BUSINESS(ExceptionConstants.EXCEPTION_BUSINESS_CODE, ExceptionConstants.EXCEPTION_BUSINESS),

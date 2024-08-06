@@ -39,4 +39,8 @@ public class ExecutorUtil {
         return new ScheduledThreadPoolExecutor(corePoolSize, factory);
     }
 
+    public static ScheduledExecutorService buildScheduledExecutor() {
+        return buildScheduledExecutor(DEFAULT_CORE_POOL_SIZE);
+    }
+
 }

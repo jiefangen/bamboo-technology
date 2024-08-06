@@ -4,6 +4,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.lang.StringUtil;
 import org.springframework.aop.framework.Advised;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.Nullable;
@@ -457,4 +458,9 @@ public class BeanUtil {
         return (T) Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), handler);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> getUltimateClass(T candidate) {
+        Class<?> clazz = AopProxyUtils.ultimateTargetClass(candidate);
+        return (Class<T>) ClassUtil.getProxyTargetClass(clazz);
+    }
 }

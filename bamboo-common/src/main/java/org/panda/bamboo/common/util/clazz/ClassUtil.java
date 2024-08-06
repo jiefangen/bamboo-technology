@@ -6,6 +6,7 @@ import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.model.nature.PropertyMeta;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.lang.StringUtil;
+import org.springframework.aop.SpringProxy;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.Resource;
@@ -802,4 +803,15 @@ public class ClassUtil {
         result.put(propertyName, propertyMeta);
     }
 
+    public static boolean isCglibProxyClass(Class<?> clazz) {
+        return (SpringProxy.class.isAssignableFrom(clazz) && clazz.getName()
+                .contains(ClassUtils.CGLIB_CLASS_SEPARATOR));
+    }
+
+    public static Class<?> getProxyTargetClass(Class<?> clazz) {
+        if (isCglibProxyClass(clazz)) {
+            return clazz.getSuperclass();
+        }
+        return clazz;
+    }
 }
