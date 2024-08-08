@@ -36,11 +36,11 @@ public class DefaultAuthorizationInfo implements AuthorizationInfo {
         return this.caching;
     }
 
-    public void addRole(final String role) {
+    public void addRole(String role) {
         this.roles.add(role);
     }
 
-    public void addPermission(final String permission) {
+    public void addPermission(String permission) {
         this.permissions.add(permission);
     }
 

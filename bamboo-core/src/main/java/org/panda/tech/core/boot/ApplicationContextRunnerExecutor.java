@@ -27,7 +27,6 @@ public class ApplicationContextRunnerExecutor implements ApplicationRunner {
 
     private final ScheduledExecutorService executor;
 
-    @Autowired
     public ApplicationContextRunnerExecutor(Optional<ScheduledExecutorService> executorOptional) {
         this.executor = executorOptional.orElseGet(ExecutorUtil::buildScheduledExecutor);
     }
