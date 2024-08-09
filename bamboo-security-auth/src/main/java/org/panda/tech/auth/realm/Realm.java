@@ -39,7 +39,7 @@ public interface Realm<T> {
      * @throws HandleableException
      *             如果登录校验不通过
      */
-    LoginInfo getLoginInfo(AuthenticationToken loginToken) throws HandleableException;
+    LoginInfo getLoginInfo(AuthenticationToken loginToken) throws BusinessException;
 
     /**
      * 获取指定用户的授权信息

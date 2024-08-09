@@ -15,7 +15,7 @@ public abstract class HandleableException extends Exception {
         super();
     }
 
-    public HandleableException(final String message) {
+    public HandleableException(String message) {
         super(message);
     }
 
