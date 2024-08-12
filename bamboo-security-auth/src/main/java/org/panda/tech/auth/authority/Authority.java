@@ -19,7 +19,6 @@ public class Authority {
      * 所属角色清单
      */
     private Set<String> belongs = new HashSet<>();
-    private Map<Locale, String> captions = new HashMap<>();
     /**
      * 登录即可访问的权限
      */
@@ -42,18 +41,6 @@ public class Authority {
         return this.belongs;
     }
 
-    public Map<Locale, String> getCaptions() {
-        return this.captions;
-    }
-
-    public void setCaption(String caption) {
-        this.captions.put(Locale.getDefault(), caption);
-    }
-
-    public String getCaption() {
-        return this.captions.get(Locale.getDefault());
-    }
-
     public boolean isNotEmpty() {
         return StringUtils.isNotEmpty(this.role) || StringUtils.isNotEmpty(this.permission);
     }
@@ -74,7 +61,7 @@ public class Authority {
         }
 
         boolean roleContained = true;
-        Iterable<String> roles = authorization.getRoles();
+        Collection<String> roles = authorization.getRoles();
         if (roles == null) {
             roles = Collections.emptyList();
         }
@@ -89,7 +76,7 @@ public class Authority {
 
         boolean permissionContained = true;
         if (StringUtils.isNotEmpty(this.permission)) { // 当前授权包含权限限定才校验权限
-            Iterable<String> permissions = authorization.getPermissions();
+            Collection<String> permissions = authorization.getPermissions();
             if (permissions == null) {
                 permissions = Collections.emptyList();
             }

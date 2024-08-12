@@ -4,7 +4,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.tech.auth.annotation.Accessibility;
+import org.panda.tech.auth.authority.Authority;
 import org.panda.tech.auth.mgt.SubjectManager;
+import org.panda.tech.auth.mgt.exception.NoAuthorityException;
 import org.panda.tech.auth.subject.Subject;
 import org.panda.tech.core.exception.ExceptionEnum;
 import org.panda.tech.core.exception.business.BusinessException;
@@ -14,7 +16,6 @@ import org.panda.tech.core.web.restful.RestfulResult;
 import org.panda.tech.core.web.util.NetUtil;
 import org.panda.tech.core.web.util.WebHttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -72,10 +73,6 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
         this.loginUrl = loginUrl;
     }
 
-//    public void setMenuResolver(MenuResolver menuResolver) {
-//        this.menu = menuResolver.getFullMenu();
-//    }
-
     private Class<?> getUserClass(HttpServletRequest request, HttpServletResponse response) {
         if (this.userClass == null) {
             Subject subject = this.subjectManager.getSubject(request, response);
@@ -94,9 +91,10 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
         }
         String url = WebHttpUtil.getRelativeRequestAction(request); // 取不含扩展名的URL
         if (matches(url)) { // URL匹配才进行校验
+            Accessibility accessibility = null;
             // 校验Accessibility注解限制
             if (handler instanceof HandlerMethod) {
-                Accessibility accessibility = ((HandlerMethod) handler).getMethodAnnotation(Accessibility.class);
+                accessibility = ((HandlerMethod) handler).getMethodAnnotation(Accessibility.class);
                 // 局域网访问限制校验
                 if (accessibility != null) {
                     if (accessibility.lan()) {
@@ -117,7 +115,6 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
             Class<?> userClass = getUserClass(request, response);
             Subject subject = this.subjectManager.getSubject(request, response, userClass);
             if (subject != null) { // 能取得subject才进行校验
-                HttpMethod method = HttpMethod.valueOf(request.getMethod());
                 // 忽略资源，则跳过不作限制
                 if (this.isAnonymous(url)) {
                     return true;
@@ -127,7 +124,7 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
                     return false;
                 }
                 // 授权校验
-                if (!validateAuthority(url, method, subject, request)) {
+                if (!validateAuthority(accessibility, subject, response)) {
                     return false;
                 }
             }
@@ -151,7 +148,7 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
                                     HttpServletResponse response) throws ServletException, IOException {
         if (!subject.isLogined()) {
             // 未登录且不允许匿名访问
-            if (StringUtils.isBlank(this.loginUrl)) { // AJAX请求未登录或未指定登录页面地址时，返回错误状态
+            if (StringUtils.isBlank(this.loginUrl)) { // 未登录或未指定登录页面地址时，返回错误状态
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 Object obj = RestfulResult.getFailure(ExceptionEnum.UNAUTHORIZED);
                 WebHttpUtil.buildJsonResponse(response, obj);
@@ -170,13 +167,31 @@ public class SecurityValidateInterceptor extends UrlPatternMatchSupport implemen
         return true;
     }
 
-    protected boolean validateAuthority(String url, HttpMethod method, Subject subject,
-                                        HttpServletRequest request) throws BusinessException {
-//        if (this.menu != null) {
-//            Authority authority = this.menu.getAuthority(url, method);
-//            // 此时授权可能为null，为null时将被视为无访问权限，意味着在配置有菜单的系统中，URL访问均应在菜单配置中进行配置
-//            subject.validateAuthority(authority);
-//        }
+    protected boolean validateAuthority(Accessibility accessibility, Subject subject, HttpServletResponse response)
+            throws BusinessException, IOException {
+        if (accessibility != null) {
+            Authority authority;
+            String role = accessibility.role();
+            String permission = accessibility.permission();
+            if (StringUtils.isEmpty(permission) && StringUtils.isEmpty(role)) { // 权限配置为空登录即可访问
+                authority = Authority.LOGINED;
+            } else {
+                authority = new Authority(role, permission);
+            }
+            // 权限资源授权验证
+            try {
+                // 此时授权可能为null，为null时将被视为无访问权限
+                subject.validateAuthority(authority);
+            } catch (BusinessException e) {
+                LogUtil.warn(getClass(), e.toString());
+                Object failureResult = RestfulResult.failure(e.getMessage());
+                if (e instanceof NoAuthorityException) {
+                    failureResult = RestfulResult.getFailure(ExceptionEnum.AUTH_NO_OPERA);
+                }
+                WebHttpUtil.buildJsonResponse(response, failureResult);
+                return false;
+            }
+        }
         return true;
     }
 

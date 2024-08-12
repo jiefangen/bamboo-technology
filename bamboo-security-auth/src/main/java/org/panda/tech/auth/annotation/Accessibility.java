@@ -1,5 +1,7 @@
 package org.panda.tech.auth.annotation;
 
+import org.panda.bamboo.common.constant.basic.Strings;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,4 +26,14 @@ public @interface Accessibility {
      * @return 是否只有局域网可访问
      */
     boolean lan() default false;
+
+    /**
+     * @return 所需角色
+     */
+    String role() default Strings.EMPTY;
+
+    /**
+     * @return 所需许可
+     */
+    String permission() default Strings.EMPTY;
 }

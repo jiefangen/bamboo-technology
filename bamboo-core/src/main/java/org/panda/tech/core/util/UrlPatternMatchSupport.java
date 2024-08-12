@@ -22,14 +22,14 @@ public class UrlPatternMatchSupport {
     /**
      * 不可匿名访问的URL模板集
      */
-    public void setIncludeUrlPatterns(final String[] includeUrlPatterns) {
+    public void setIncludeUrlPatterns(String[] includeUrlPatterns) {
         this.includeUrlPatterns = includeUrlPatterns;
     }
 
     /**
      * 可匿名访问的URL模板集
      */
-    public void setExcludeUrlPatterns(final String[] excludeUrlPatterns) {
+    public void setExcludeUrlPatterns(String[] excludeUrlPatterns) {
         this.excludeUrlPatterns = excludeUrlPatterns;
     }
 
