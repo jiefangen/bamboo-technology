@@ -1,9 +1,10 @@
-package org.panda.tech.core.web.config.exception;
+package org.panda.tech.core.exception.handle;
 
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.tech.core.exception.ExceptionEnum;
 import org.panda.tech.core.web.restful.RestfulResult;
+import org.springframework.core.annotation.Order;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * @author fangen
  **/
+@Order(100)
 @ControllerAdvice
 public class GlobalExceptionHandler {
     /**
