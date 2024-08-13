@@ -20,7 +20,7 @@ public enum AuthRoleCode {
     CUSTOMER;
 
 
-    public static List<String> getManagerRoles() {
+    public static List<String> getTopRoles() {
         List<String> topRoles = new ArrayList<>();
         topRoles.add(ADMIN.name());
         return topRoles;
@@ -32,7 +32,7 @@ public enum AuthRoleCode {
      * @param roleCode 角色Code
      * @return true-是；false-否
      */
-    public static boolean isManagerRole(String roleCode) {
-        return getManagerRoles().contains(roleCode);
+    public static boolean isTopRole(String roleCode) {
+        return getTopRoles().contains(roleCode);
     }
 }
