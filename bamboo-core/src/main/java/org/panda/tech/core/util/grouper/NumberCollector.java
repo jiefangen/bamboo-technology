@@ -16,7 +16,7 @@ public class NumberCollector<T> implements Collector<T, List<List<T>>, List<List
     // 每组的个数
     private final int number;
 
-    public NumberCollector(int number) {
+    protected NumberCollector(int number) {
         this.number = number;
     }
 

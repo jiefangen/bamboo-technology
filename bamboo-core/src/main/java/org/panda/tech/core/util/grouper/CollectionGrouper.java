@@ -10,7 +10,14 @@ import java.util.List;
  * @author fangen
  */
 public class CollectionGrouper {
-
+    /**
+     * 按照特定元素个数平均分组
+     *
+     * @param list 分组集合
+     * @param number 分组个数
+     * @param <T> 集合元素类型
+     * @return 分组后的集合
+     */
     public static <T> List<List<T>> groupByNumber(List<T> list, int number) {
         if (CollectionUtils.isEmpty(list) || number < 1) {
             throw new IllegalArgumentException();
