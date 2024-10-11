@@ -194,7 +194,7 @@ public abstract class WebMvcSecurityConfigurerSupport extends WebSecurityConfigu
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
                 .accessDeniedHandler(accessDeniedHandler());
 
-        // 移除SpringSecurity登录统一过滤链，由业务端直接处理登出逻辑。
+        // 移除SpringSecurity登出统一过滤链，由应用端直接处理登出逻辑。
 //                .and().logout().logoutUrl(this.urlProvider.getLogoutProcessUrl())
 //                .logoutRequestMatcher(new AntPathRequestMatcher(this.urlProvider.getLogoutProcessUrl(), HttpMethod.GET.name()))
 //                .logoutSuccessHandler(this.logoutSuccessHandler)
