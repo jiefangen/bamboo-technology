@@ -104,13 +104,9 @@ public abstract class WebMvcSecurityConfigurerSupport extends WebSecurityConfigu
         return new AccessDeniedBusinessExceptionHandler();
     }
 
-    // 登出成功后的处理
-    @Bean
+    // 登出成功后的处理（被移除由应用端实现）
     public LogoutSuccessHandler logoutSuccessHandler() {
         SimpleUrlLogoutSuccessHandler handler = getApplicationContext().getBean(SimpleUrlLogoutSuccessHandler.class);
-        if (handler == null) { // 未获取登出处理器则使用默认
-            handler = new SimpleUrlLogoutSuccessHandler();
-        }
         handler.setRedirectStrategy(this.redirectStrategy);
         String logoutSuccessUrl = this.urlProvider.getLogoutSuccessUrl();
         if (logoutSuccessUrl != null) {
@@ -196,9 +192,13 @@ public abstract class WebMvcSecurityConfigurerSupport extends WebSecurityConfigu
         // @formatter:off
         http.authorizeRequests().requestMatchers(anonymousMatchers).permitAll().anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
-                .accessDeniedHandler(accessDeniedHandler())
-                .and().logout().logoutUrl(this.urlProvider.getLogoutProcessUrl()).logoutSuccessHandler(logoutSuccessHandler())
-                .deleteCookies(getLogoutClearCookies()).permitAll();
+                .accessDeniedHandler(accessDeniedHandler());
+
+        // 移除SpringSecurity登录统一过滤链，由业务端直接处理登出逻辑。
+//                .and().logout().logoutUrl(this.urlProvider.getLogoutProcessUrl())
+//                .logoutRequestMatcher(new AntPathRequestMatcher(this.urlProvider.getLogoutProcessUrl(), HttpMethod.GET.name()))
+//                .logoutSuccessHandler(this.logoutSuccessHandler)
+//                .deleteCookies(getLogoutClearCookies()).permitAll();
         // @formatter:on
 
         // 附加配置
