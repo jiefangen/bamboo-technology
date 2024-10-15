@@ -31,7 +31,7 @@ public abstract class MongoRepoxSupport<T extends Entity> extends RepoxSupport<T
 
     private QueryResult<T> query(List<Criteria> criteriaList, QueryIgnoring ignoring, int pageSize, int pageNo,
                                  List<FieldOrder> orders) {
-        Query query = MongoQueryUtil.buildQuery(criteriaList);
+        Query query = MongoQueryUtil.buildAndQuery(criteriaList);
         Long total = null;
         if (pageSize > 0 && ignoring != QueryIgnoring.TOTAL) { // 需分页查询且不忽略总数时，才获取总数
             total = getAccessTemplate().count(getEntityClass(), query);

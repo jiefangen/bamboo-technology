@@ -19,7 +19,7 @@ public class MongoQueryUtil {
      * @param criteriaList Criteria集合
      * @return Query对象
      */
-    public static Query buildQuery(List<Criteria> criteriaList) {
+    public static Query buildAndQuery(List<Criteria> criteriaList) {
         if (criteriaList == null || criteriaList.isEmpty()) {
             return new Query(new Criteria());
         }
@@ -27,6 +27,12 @@ public class MongoQueryUtil {
         return new Query(new Criteria().andOperator(array));
     }
 
+    /**
+     * 用指定Criteria集合以or的形式构建一个Query对象
+     *
+     * @param criteriaList Criteria集合
+     * @return Query对象
+     */
     public static Query buildOrQuery(List<Criteria> criteriaList) {
         Criteria[] array = criteriaList.toArray(new Criteria[0]);
         return new Query(new Criteria().orOperator(array));
