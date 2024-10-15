@@ -1436,4 +1436,67 @@ public class StringUtil {
         return s.split(separator);
     }
 
+    /**
+     * 判断字符串是否是整数
+     *
+     * @param str 字符串
+     * @return 判定结果
+     */
+    public static boolean isInteger(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 判断字符串是否是长整数
+     *
+     * @param str 字符串
+     * @return 判定结果
+     */
+    public static boolean isLong(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        try {
+            Long.parseLong(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 判断字符串是否是浮点数
+     *
+     * @param str 字符串
+     * @return 判定结果
+     */
+    public static boolean isDouble(String str) {
+        if (str == null || str.isEmpty()) {
+            return false;
+        }
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     * 判断字符串是否为任意数值类型（包括整数和浮点数）
+     *
+     * @param str 字符串
+     * @return 判定结果
+     */
+    public static boolean isNumeric(String str) {
+        return isInteger(str) || isLong(str) || isDouble(str);
+    }
 }
