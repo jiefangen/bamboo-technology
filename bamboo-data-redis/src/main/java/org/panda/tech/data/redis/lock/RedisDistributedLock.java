@@ -17,6 +17,10 @@ public class RedisDistributedLock {
     @Autowired
     private RedisLockRegistry redisLockRegistry;
 
+    private Lock obtainLock(String lockKey) {
+        return redisLockRegistry.obtain(lockKey);
+    }
+
     /**
      * 阻塞式获取锁
      */
@@ -59,9 +63,5 @@ public class RedisDistributedLock {
         } finally {
             redisLockRegistry.expireUnusedOlderThan(RedisConstants.DEFAULT_EXPIRE_UNUSED);
         }
-    }
-
-    private Lock obtainLock(String lockKey) {
-        return redisLockRegistry.obtain(lockKey);
     }
 }

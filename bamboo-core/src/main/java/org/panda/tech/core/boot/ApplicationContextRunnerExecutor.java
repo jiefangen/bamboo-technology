@@ -3,6 +3,7 @@ package org.panda.tech.core.boot;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.clazz.BeanUtil;
 import org.panda.tech.core.concurrent.ExecutorUtil;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -20,7 +21,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class ApplicationContextRunnerExecutor implements ApplicationRunner {
+public class ApplicationContextRunnerExecutor implements ApplicationRunner, DisposableBean {
 
     @Autowired
     private ApplicationContext context;
@@ -53,6 +54,13 @@ public class ApplicationContextRunnerExecutor implements ApplicationRunner {
                     LogUtil.error(getClass(), e);
                 }
             }
+        }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        if (executor != null && !executor.isShutdown()) {
+            executor.shutdown();
         }
     }
 }

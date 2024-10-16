@@ -29,24 +29,13 @@ public class RedisCacheLock {
     }
 
     /**
-     * 获取锁
+     * lua脚本获取锁
+     * 原子性，获取锁和设置过期时间原子执行
+     *
+     * @param lockKey 锁key
+     * @param identifier 标识锁的持有者
+     * @param expireTime 失效时间，单位秒
      */
-    public boolean acquireLock(String key, String value, long expireTime) {
-        Boolean result = stringRedisTemplate.opsForValue().setIfAbsent(key, value, expireTime, TimeUnit.SECONDS);
-        return result != null && result;
-    }
-
-    /**
-     * 释放锁
-     */
-    public void releaseLock(String key, String value) {
-        String currentValue = stringRedisTemplate.opsForValue().get(key);
-        if (value.equals(currentValue)) {
-            stringRedisTemplate.delete(key);
-        }
-    }
-
-    // lua脚本获取锁，失效时间，单位秒
     public boolean acquireLuaLock(String lockKey, String identifier, int expireTime) {
         String luaScript = "if redis.call('setnx', KEYS[1], ARGV[1]) == 1 then " +
                 "return redis.call('expire', KEYS[1], ARGV[2]) else return 0 end";
@@ -58,7 +47,12 @@ public class RedisCacheLock {
         return result != null && result == 1;
     }
 
-    // lua脚本释放锁
+    /**
+     * lua脚本释放锁
+     *
+     *  @param lockKey 锁key
+     *  @param identifier 标识锁的持有者
+     */
     public void releaseLuaLock(String lockKey, String identifier) {
         String luaScript = "if redis.call('get', KEYS[1]) == ARGV[1] then " +
                 "return redis.call('del', KEYS[1]) else return 0 end";

@@ -4,17 +4,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.Ordered;
 
 /**
- * 在容器初始化完成后执行操作的bean
+ * 应用启动完成后按顺序执行的执行器
  *
  * @author fangen
  */
 public interface ApplicationContextRunner extends Ordered {
 
-    int DEFAULT_ORDER = 0;
-
     @Override
     default int getOrder() {
-        return DEFAULT_ORDER;
+        return 0;
     }
 
     /**
