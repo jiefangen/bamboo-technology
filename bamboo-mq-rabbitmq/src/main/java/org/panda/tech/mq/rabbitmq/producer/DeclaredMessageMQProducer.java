@@ -39,7 +39,7 @@ public abstract class DeclaredMessageMQProducer<T> extends MessageMQProducerSupp
     }
 
     /**
-     * 发送
+     * 消息发送
      *
      * @param exchangeName 交换机名称
      * @param routingKey 路由键

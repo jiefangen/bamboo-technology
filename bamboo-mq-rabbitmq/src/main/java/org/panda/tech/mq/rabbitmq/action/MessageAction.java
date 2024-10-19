@@ -8,6 +8,11 @@ import com.rabbitmq.client.Connection;
  */
 public interface MessageAction {
     /**
+     * 获取连接名称
+     */
+    String getConnectionName();
+
+    /**
      * 获取消息MQ连接
      */
     Connection getConnection();
