@@ -15,7 +15,7 @@ public interface MessageMQProducer<T> {
 
     /**
      * 消息发送
-     * 多线程场景需关闭通道复用
+     * 由于通道不是线程安全，故多线程场景需关闭通道复用
      *
      * @param channel 通道
      * @param exchangeName 交换机名称
@@ -34,7 +34,7 @@ public interface MessageMQProducer<T> {
      * @param routingKey 路由键
      * @param properties 消息参数
      * @param payload 消息
-     * @param channelReuse 通道复用
+     * @param channelReuse 通道复用，多线程场景下需关闭
      */
     void sendDirect(ChannelDefinition definition, String routingKey, AMQP.BasicProperties properties, T payload,
                     boolean channelReuse);
