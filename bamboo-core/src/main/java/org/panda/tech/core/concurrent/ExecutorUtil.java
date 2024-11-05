@@ -15,21 +15,21 @@ public class ExecutorUtil {
     private ExecutorUtil() {
     }
 
-    public static final String TASK_EXECUTOR_BEAN_NAME = "taskExecutor";
-    public static final String DEFAULT_EXECUTOR_BEAN_NAME = "defaultExecutor";
+    public static final String DEFAULT_EXECUTOR_BEAN_NAME = "defaultExecutor"; // 自定义默认
+    public static final String TASK_EXECUTOR_BEAN_NAME = "taskExecutor"; // 系统默认
     public static final String SCHEDULED_EXECUTOR_BEAN_NAME = "scheduledExecutor";
     public static final int DEFAULT_CORE_POOL_SIZE = 5;
 
-    public static ThreadPoolTaskExecutor buildTaskExecutor(int corePoolSize) {
-        return new TaskThreadPoolExecutor(corePoolSize);
+    public static ExecutorService buildDefaultExecutor(int corePoolSize) {
+        return new DefaultThreadPoolExecutor(corePoolSize);
     }
 
     public static ExecutorService buildDefaultExecutor() {
         return new DefaultThreadPoolExecutor(DEFAULT_CORE_POOL_SIZE);
     }
 
-    public static ExecutorService buildDefaultExecutor(int corePoolSize) {
-        return new DefaultThreadPoolExecutor(corePoolSize);
+    public static ThreadPoolTaskExecutor buildTaskExecutor(int corePoolSize) {
+        return new TaskThreadPoolExecutor(corePoolSize);
     }
 
     public static ScheduledExecutorService buildScheduledExecutor(int corePoolSize) {
