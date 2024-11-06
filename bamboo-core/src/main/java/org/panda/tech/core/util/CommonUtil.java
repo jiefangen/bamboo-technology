@@ -76,12 +76,12 @@ public class CommonUtil {
     }
 
     /**
-     * 获取指定类运行目录
+     * 获取本地指定类运行目录
      *
      * @param clazz 指定类
      * @return 指定类运行路径
      */
-    public static String getCurrentPath(Class<?> clazz) throws URISyntaxException {
+    public static String getLocalPath(Class<?> clazz) throws URISyntaxException {
         Path currentPath = Paths.get(clazz.getProtectionDomain().getCodeSource().getLocation().toURI());
         String currentDir = currentPath.getParent().toString();
         if (currentDir.endsWith("target")) { // 去掉 "target" 目录

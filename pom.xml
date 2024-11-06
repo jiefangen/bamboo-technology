@@ -76,6 +76,16 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!-- 防止xdb文件编译 -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>xdb</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                    <outputDirectory/>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

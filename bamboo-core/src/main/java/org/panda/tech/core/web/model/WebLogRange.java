@@ -44,4 +44,13 @@ public class WebLogRange implements Serializable {
      * 花费时长
      */
     private Long takeTime;
+
+    /**
+     * 终端设备
+     */
+    private String terminalDevice;
+    /**
+     * 终端操作系统
+     */
+    private String terminalOs;
 }

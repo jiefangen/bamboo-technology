@@ -1,12 +1,11 @@
 package org.panda.tech.core.web.util;
 
 import org.lionsoul.ip2region.xdb.Searcher;
-import org.panda.bamboo.common.constant.Commons;
-import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.util.LogUtil;
-import org.panda.tech.core.util.CommonUtil;
+import org.springframework.util.FileCopyUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * IP转区域离线工具类
@@ -14,9 +13,13 @@ import java.io.IOException;
  * @author fangen
  **/
 public class IP2RegionUtil {
-
-    private static final String IP_XDB_PATH = "META-INF/data/ip2region.xdb";
-
+    /**
+     * xdb文件相对路径
+     */
+    private static final String IP_XDB_PATH = "/META-INF/data/ip2region.xdb";
+    /**
+     * 全局searcher对象
+     */
     private volatile Searcher searcher;
 
     /**
@@ -30,13 +33,10 @@ public class IP2RegionUtil {
         if (NetUtil.isLocalHost(ip)) { // 本地IP判断
             return "0|0|0|本地IP|本地IP";
         }
-        try {
-            String dbPath = CommonUtil.getCurrentPath(IP2RegionUtil.class) + Strings.SLASH
-                    + Commons.PROJECT_RES_PATH + IP_XDB_PATH;
-            // 创建 searcher 对象
-            Searcher searcher = Searcher.newWithFileOnly(dbPath);
+        try (InputStream ris = IP2RegionUtil.class.getResourceAsStream(IP_XDB_PATH)) {
+            byte[] dbBinStr = FileCopyUtils.copyToByteArray(ris);
+            Searcher searcher = Searcher.newWithBuffer(dbBinStr);
             String region = searcher.search(ip);
-            // 关闭资源
             searcher.close();
             return region;
         } catch (Exception e) {
@@ -52,11 +52,9 @@ public class IP2RegionUtil {
         if (searcher == null) {
             synchronized(this) { // 锁当前实例
                 if (searcher == null) {
-                    try {
-                        String dbPath = CommonUtil.getCurrentPath(IP2RegionUtil.class) + Strings.SLASH
-                                + Commons.PROJECT_RES_PATH + IP_XDB_PATH;
-                        byte[] cBuff = Searcher.loadContentFromFile(dbPath);
-                        searcher = Searcher.newWithBuffer(cBuff);
+                    try (InputStream ris = IP2RegionUtil.class.getResourceAsStream(IP_XDB_PATH)) {
+                        byte[] dbBinStr = FileCopyUtils.copyToByteArray(ris);
+                        searcher = Searcher.newWithBuffer(dbBinStr);
                     } catch (Exception e) {
                         LogUtil.error(IP2RegionUtil.class, "failed to load content cached searcher: {}\n", e);
                     }
@@ -72,7 +70,7 @@ public class IP2RegionUtil {
      * @return 区域信息
      */
     public String getIPRegionCache(String ip) {
-        loadCachedSearcher();
+        this.loadCachedSearcher();
         try {
             return searcher.search(ip);
         } catch (Exception e) {

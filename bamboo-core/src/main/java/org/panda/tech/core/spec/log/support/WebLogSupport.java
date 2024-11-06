@@ -1,8 +1,10 @@
 package org.panda.tech.core.spec.log.support;
 
+import cn.hutool.http.useragent.UserAgent;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.panda.bamboo.common.annotation.helper.EnumValueHelper;
+import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.jackson.JsonUtil;
 import org.panda.tech.core.spec.log.annotation.WebOperationLog;
@@ -12,6 +14,7 @@ import org.panda.tech.core.web.mvc.servlet.http.BodyRepeatableRequestWrapper;
 import org.panda.tech.core.web.util.WebHttpUtil;
 import org.slf4j.Logger;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +32,12 @@ public abstract class WebLogSupport {
         threadInfo.setStartTimeMillis(System.currentTimeMillis());
         // 组装请求参数体中的内容
         HttpServletRequest request = SpringWebContext.getRequest();
+        String userAgentHeader = request.getHeader(HttpHeaders.USER_AGENT);
+        UserAgent userAgent = WebHttpUtil.getUserAgent(userAgentHeader);
+        if (userAgent != null) {
+            threadInfo.setTerminalDevice(userAgent.getBrowser().getName() + Strings.SPACE + userAgent.getVersion());
+            threadInfo.setTerminalOs(userAgent.getOs().getName() + Strings.SPACE + userAgent.getOsVersion());
+        }
         if (StringUtils.isEmpty(webOperationLog.content())) {
             threadInfo.setContent(WebHttpUtil.getRelativeRequestUrl(request));
         } else {
