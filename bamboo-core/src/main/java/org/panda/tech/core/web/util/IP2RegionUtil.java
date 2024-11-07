@@ -70,6 +70,9 @@ public class IP2RegionUtil {
      * @return 区域信息
      */
     public String getIPRegionCache(String ip) {
+        if (NetUtil.isLocalHost(ip)) {
+            return "0|0|0|本地IP|本地IP";
+        }
         this.loadCachedSearcher();
         try {
             return searcher.search(ip);
