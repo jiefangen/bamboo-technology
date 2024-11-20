@@ -145,6 +145,20 @@ public class JsonUtil {
     }
 
     /**
+     * 将JSON字符串解析为指定类型的对象
+     *
+     * @param json JSON标准形式的字符串
+     * @return JSON对象
+     */
+    public static <T> T fromJson(String json) {
+        try {
+            return JacksonUtil.DEFAULT_MAPPER.readValue(json, new TypeReference<>(){});
+        } catch (Exception e) {
+            throw new RuntimeException("JSON parsing failed", e);
+        }
+    }
+
+    /**
      * 将JSON标准形式的字符串转换为具体类型不确定的List
      *
      * @param json JSON标准形式的字符串
