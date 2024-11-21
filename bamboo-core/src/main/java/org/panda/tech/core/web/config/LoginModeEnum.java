@@ -15,5 +15,4 @@ public enum LoginModeEnum {
     SMS("sms");
 
     private String value;
-
 }
