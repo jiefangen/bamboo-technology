@@ -506,4 +506,30 @@ public class IOUtil {
         return null;
     }
 
+    /**
+     * 文件二进制分块写入输出流
+     *
+     * @param outputStream 输出流
+     * @param fileBytes 文件二进制
+     */
+    public static void writeFileInChunks(OutputStream outputStream, byte[] fileBytes) {
+        // 使用 BufferedOutputStream 缓冲数据写入
+        try (BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream)) {
+            // 分块大小（1M）
+            int chunkSize = 1024 * 1024;
+            int offset = 0;
+            int totalLength = fileBytes.length;
+            // 循环分块写入数据
+            while (offset < totalLength) {
+                int remaining = totalLength - offset;
+                int length = Math.min(chunkSize, remaining);
+                bufferedOutputStream.write(fileBytes, offset, length);
+                offset += length;
+            }
+            // 确保缓冲区中的数据被写入底层流
+            bufferedOutputStream.flush();
+        } catch (IOException e) {
+            LogUtil.error(IOUtil.class, e);
+        }
+    }
 }
