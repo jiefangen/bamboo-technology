@@ -17,5 +17,4 @@ public class RpcInvokerException extends BusinessException {
     public RpcInvokerException() {
         super(RpcConstants.EXC_RPC_INVOKER_CODE, RpcConstants.EXC_RPC_INVOKER);
     }
-
 }
