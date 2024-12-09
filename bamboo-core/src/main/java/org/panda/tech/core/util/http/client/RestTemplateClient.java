@@ -53,6 +53,10 @@ public class RestTemplateClient {
         return request(HttpMethod.GET, url, params, null,  headers);
     }
 
+    public static String requestByGet(String url) throws Exception {
+        return request(HttpMethod.GET, url, null, null,  null);
+    }
+
     public static String requestByPost(String url, Object bodyParams, Map<String, String> headers) throws Exception {
         return request(HttpMethod.POST, url, null, bodyParams, headers);
     }

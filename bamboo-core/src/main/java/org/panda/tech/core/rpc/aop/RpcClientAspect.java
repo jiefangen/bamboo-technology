@@ -6,6 +6,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.bamboo.core.context.SpringContextHolder;
 import org.panda.tech.core.config.CommonProperties;
@@ -16,6 +17,8 @@ import org.panda.tech.core.rpc.client.RpcClientReq;
 import org.panda.tech.core.rpc.constant.RpcConstants;
 import org.panda.tech.core.rpc.constant.exception.RpcInvokerException;
 import org.panda.tech.core.rpc.proxy.RpcClientProcessor;
+import org.panda.tech.core.util.http.client.RestTemplateClient;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -82,6 +85,10 @@ public class RpcClientAspect {
         if (targetProxy == null) {
             throw new RpcInvokerException(RpcConstants.EXC_RPC_ILLEGAL_BEAN);
         }
+        // 内部请求资源预检查
+        if (rpcClient.internal() && !reqPreCheck(urlRoot)) {
+            throw new RpcInvokerException(String.format(RpcConstants.EXC_RPC_NO_SERVICE, urlRoot));
+        }
         targetProxy.setServerUrlRoot(urlRoot);
         // 获取方法的参数列表
         Parameter[] parameters = method.getParameters();
@@ -91,4 +98,14 @@ public class RpcClientAspect {
         return targetProxy.invoke(rpcMethod.method(), rpcMethod.value(), parameters, args, returnType, rpcMethod.subTypes());
     }
 
+    private boolean reqPreCheck(String urlRoot) {
+        try {
+            return RestTemplateClient.requestByGet(urlRoot + "/home") != null;
+        } catch (ResourceAccessException e) { // 资源连接失败异常
+            LogUtil.error(getClass(), e);
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

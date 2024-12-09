@@ -49,5 +49,9 @@ public class RpcConstants {
      * 无效的URL根路径
      */
     public static final String EXC_RPC_ILLEGAL_ROOT = "Illegal Rpc urlRoot";
+    /**
+     * 内部请求服务异常
+     */
+    public static final String EXC_RPC_NO_SERVICE = "Internal request service exception, urlRoot: %s";
 
 }
