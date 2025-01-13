@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 服务端通用Home业务控制器支持
+ * 服务端健康检查控制器支持
  */
 @RequestMapping(value = "/home")
 public abstract class HomeControllerSupport {
