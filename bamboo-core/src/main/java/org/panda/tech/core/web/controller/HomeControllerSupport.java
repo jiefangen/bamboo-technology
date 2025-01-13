@@ -3,6 +3,7 @@ package org.panda.tech.core.web.controller;
 import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.tech.core.config.app.AppConstants;
+import org.panda.tech.core.web.context.SpringWebContext;
 import org.panda.tech.core.web.restful.RestfulResult;
 import org.panda.tech.core.web.util.NetUtil;
 import org.panda.tech.core.web.util.WebHttpUtil;
@@ -31,7 +32,8 @@ public abstract class HomeControllerSupport {
 
     @GetMapping
     @ResponseBody
-    public RestfulResult<Map<String, Object>> home(HttpServletRequest request) {
+    public RestfulResult<Object> home() {
+        HttpServletRequest request = SpringWebContext.getRequest();
         return RestfulResult.success(getApplicationMap(request));
     }
 
