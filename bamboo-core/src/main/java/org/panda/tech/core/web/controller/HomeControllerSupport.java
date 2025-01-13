@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 服务端通用Home业务控制器支持
@@ -29,20 +31,29 @@ public abstract class HomeControllerSupport {
 
     @GetMapping
     @ResponseBody
-    public RestfulResult<String> home() {
-        return RestfulResult.success(getApplicationDesc());
+    public RestfulResult<Map<String, Object>> home(HttpServletRequest request) {
+        return RestfulResult.success(getApplicationMap(request));
     }
 
     @GetMapping(value = "/index")
     public ModelAndView index(HttpServletRequest request) {
         ModelAndView modelAndView = new ModelAndView(getIndexViewName());
-        modelAndView.addObject("appName", name);
-        modelAndView.addObject("env", env);
-        modelAndView.addObject("port", port);
-        modelAndView.addObject("appDesc", getApplicationDesc());
-        modelAndView.addObject("localHost", NetUtil.getLocalHost());
-        modelAndView.addObject("remoteAddress", WebHttpUtil.getRemoteAddress(request));
+        Map<String, Object> applicationMap = getApplicationMap(request);
+        for (Map.Entry<String, Object> entry : applicationMap.entrySet()) {
+            modelAndView.addObject(entry.getKey(), entry.getValue());
+        }
         return modelAndView;
+    }
+
+    protected Map<String, Object> getApplicationMap(HttpServletRequest request) {
+        Map<String, Object> applicationMap = new HashMap<>(6);
+        applicationMap.put("appName", name);
+        applicationMap.put("env", env);
+        applicationMap.put("port", port);
+        applicationMap.put("appDesc", getApplicationDesc());
+        applicationMap.put("localHost", NetUtil.getLocalHost());
+        applicationMap.put("remoteAddress", WebHttpUtil.getRemoteAddress(request));
+        return applicationMap;
     }
 
     protected String getApplicationDesc() {
