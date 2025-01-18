@@ -40,7 +40,7 @@ public class RpcConstants {
     /**
      * 无效的RPC客户端ID
      */
-    public static final String EXC_RPC_ILLEGAL_BEAN = "Illegal Rpc client beanId";
+    public static final String EXC_RPC_ILLEGAL_BEAN = "Illegal rpc client beanId";
     /**
      * 未配置RPC注解
      */
@@ -48,7 +48,7 @@ public class RpcConstants {
     /**
      * 无效的URL根路径
      */
-    public static final String EXC_RPC_ILLEGAL_ROOT = "Illegal Rpc urlRoot";
+    public static final String EXC_RPC_ILLEGAL_ROOT = "Illegal rpc urlRoot";
     /**
      * 内部请求服务异常
      */

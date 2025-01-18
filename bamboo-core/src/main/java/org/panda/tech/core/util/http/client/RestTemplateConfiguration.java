@@ -1,4 +1,4 @@
-package org.panda.tech.core.config.rest;
+package org.panda.tech.core.util.http.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
