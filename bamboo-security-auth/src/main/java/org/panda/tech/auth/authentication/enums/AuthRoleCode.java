@@ -1,4 +1,4 @@
-package org.panda.tech.core.config.security.model.enums;
+package org.panda.tech.auth.authentication.enums;
 
 import org.panda.bamboo.common.annotation.Caption;
 
