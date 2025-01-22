@@ -8,8 +8,9 @@ public class AppFacade {
     private String name;
     private String caption;
     private String business;
-    private String contextPath;
+    private String contextUri;
     private String directUri;
+    private String gatewayUri;
 
     public String getName() {
         return this.name;
@@ -35,12 +36,12 @@ public class AppFacade {
         this.business = business;
     }
 
-    public String getContextPath() {
-        return contextPath;
+    public String getContextUri() {
+        return contextUri;
     }
 
-    public void setContextPath(String contextPath) {
-        this.contextPath = contextPath;
+    public void setContextUri(String contextUri) {
+        this.contextUri = contextUri;
     }
 
     public String getDirectUri() {
@@ -49,5 +50,13 @@ public class AppFacade {
 
     public void setDirectUri(String directUri) {
         this.directUri = directUri;
+    }
+
+    public String getGatewayUri() {
+        return gatewayUri;
+    }
+
+    public void setGatewayUri(String gatewayUri) {
+        this.gatewayUri = gatewayUri;
     }
 }

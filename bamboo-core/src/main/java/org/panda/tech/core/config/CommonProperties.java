@@ -140,11 +140,12 @@ public class CommonProperties implements InitializingBean {
         basic.setCaption(appConfig.getCaption());
         basic.setBusiness(appConfig.getBusiness());
         if (relativeContextUri) {
-            basic.setContextPath(appConfig.getContextPath());
+            basic.setContextUri(appConfig.getContextPath());
         } else {
-            basic.setContextPath(appConfig.getContextUri(false));
+            basic.setContextUri(appConfig.getContextUri(false));
         }
         basic.setDirectUri(appConfig.getDirectUri());
+        basic.setGatewayUri(appConfig.getGatewayUri());
         return basic;
     }
 
