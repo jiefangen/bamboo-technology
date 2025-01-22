@@ -24,6 +24,8 @@ public class ClassParse {
         }
         if (String.class.isAssignableFrom(clazz)) {
             return (T) s;
+        } else if (Integer.class.isAssignableFrom(clazz)) {
+            return (T) Integer.valueOf(s);
         } else if (clazz.isEnum()) {
             return (T) Enum.valueOf((Class<Enum>) clazz, s);
         } else if (Date.class.isAssignableFrom(clazz)) {
