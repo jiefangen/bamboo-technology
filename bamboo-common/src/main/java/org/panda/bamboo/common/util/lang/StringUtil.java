@@ -1067,6 +1067,21 @@ public class StringUtil {
         return result.toString();
     }
 
+    /**
+     * 拼接任意数量类型的对象
+     *
+     * @param args 一组对象
+     * @return 连接后的字符串
+     */
+    public static String joinObj(Object... args) {
+        StringBuilder sb = new StringBuilder();
+        for (Object arg : args) {
+            if (arg != null) {
+                sb.append(arg);
+            }
+        }
+        return sb.toString();
+    }
 
     /**
      * 如果指定字符串为空，则返回指定默认值

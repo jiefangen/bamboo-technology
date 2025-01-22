@@ -14,10 +14,7 @@ public class AppConfiguration {
     private String business;
     private String gatewayUri;
     private String directUri;
-    private String contextPath = Strings.EMPTY;
-    private String loginPath = "/login/cas";
-    private String logoutPath = "/logout";
-    private String loginedPath = Strings.EMPTY;
+    private String contextPath;
     private Map<String, String> subs;
 
     public String getCaption() {
@@ -66,39 +63,6 @@ public class AppConfiguration {
         this.contextPath = contextPath;
     }
 
-    public String getLoginPath() {
-        return this.loginPath;
-    }
-
-    /**
-     * @param loginPath 登录的相对路径，默认为/login/cas
-     */
-    public void setLoginPath(String loginPath) {
-        this.loginPath = loginPath;
-    }
-
-    public String getLogoutPath() {
-        return this.logoutPath;
-    }
-
-    /**
-     * @param logoutPath 登出的相对路径，默认为/logout
-     */
-    public void setLogoutPath(String logoutPath) {
-        this.logoutPath = logoutPath;
-    }
-
-    public String getLoginedPath() {
-        return this.loginedPath;
-    }
-
-    /**
-     * @param loginedPath 登录后的默认跳转相对路径，默认为空字符串
-     */
-    public void setLoginedPath(String loginedPath) {
-        this.loginedPath = loginedPath;
-    }
-
     public Map<String, String> getSubs() {
         return this.subs;
     }
@@ -129,13 +93,4 @@ public class AppConfiguration {
         }
         return uri;
     }
-
-    public String getLoginProcessUrl() {
-        return getContextUri(false) + getLoginPath();
-    }
-
-    public String getLogoutProcessUrl() {
-        return getContextUri(false) + getLogoutPath();
-    }
-
 }
