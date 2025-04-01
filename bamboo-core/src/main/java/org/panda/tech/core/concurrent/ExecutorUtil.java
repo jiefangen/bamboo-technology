@@ -17,8 +17,11 @@ public class ExecutorUtil {
 
     public static final String DEFAULT_EXECUTOR_BEAN_NAME = "defaultExecutor"; // 自定义默认
     public static final String TASK_EXECUTOR_BEAN_NAME = "taskExecutor"; // 系统默认
-    public static final String SCHEDULED_EXECUTOR_BEAN_NAME = "scheduledExecutor";
-    public static final int DEFAULT_CORE_POOL_SIZE = 5;
+    public static final String SCHEDULED_EXECUTOR_BEAN_NAME = "scheduledExecutor"; // 定时任务线程池
+    /**
+     * 一般4核8G的服务器。核心线程设置为8左右
+     */
+    public static final int DEFAULT_CORE_POOL_SIZE = 8;
 
     public static ExecutorService buildDefaultExecutor(int corePoolSize) {
         return new DefaultThreadPoolExecutor(corePoolSize);
