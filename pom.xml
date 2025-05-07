@@ -31,8 +31,8 @@
         <module>bamboo-mq-rabbitmq</module>
         <!-- 消息队列模块-为上层服务提供RocketMQ使用准则 -->
         <module>bamboo-mq-rocketmq</module>
-        <!-- 服务安全认证授权模块-为上层服务提供鉴权标准 -->
-        <module>bamboo-security-auth</module>
+        <!-- 基于Shiro的安全认证授权模块-为上层服务提供鉴权标准 -->
+        <module>bamboo-security-shiro</module>
     </modules>
 
     <properties>
