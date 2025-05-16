@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.io.Serializable;
 
 /**
- * 定义restful接口标准返回格式
+ * 定义Restful接口标准返回格式
  *
  * @author fangen
  **/
