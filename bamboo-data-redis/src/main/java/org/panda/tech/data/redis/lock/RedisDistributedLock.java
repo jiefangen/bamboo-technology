@@ -9,8 +9,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 
 /**
- * 基于Redis的分布式锁
- * 适用于单节点或主从复制环境
+ * 基于Redis的分布式锁，适用于单节点或主从复制环境
+ * lock和tryLock不可同时使用，选取一种即可
  **/
 public class RedisDistributedLock {
 
@@ -30,8 +30,7 @@ public class RedisDistributedLock {
     }
 
     /**
-     * 非阻塞式获取锁
-     * 立即得到结果
+     * 非阻塞式获取锁，立即得到结果
      */
     public boolean tryLock(String lockKey) {
         Lock lock = obtainLock(lockKey);
