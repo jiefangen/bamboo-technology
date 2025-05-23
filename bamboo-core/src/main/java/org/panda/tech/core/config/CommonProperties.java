@@ -32,9 +32,14 @@ public class CommonProperties implements InitializingBean {
     private Map<String, String> authEnvs = new HashMap<>();
     /**
      * RPC内部全局调用根路径
-     * key-服务beanId；value-服务根路径
+     * key-服务beanId；value-多节点服务根路径
      */
-    private Map<String, String> serviceRoot = new HashMap<>();
+    private Map<String, String> serviceRoots = new HashMap<>();
+    /**
+     * 应用服务名称容器
+     * key-服务beanId；value-节点服务名称带环境参量
+     */
+    private Map<String, String> appServiceNames = new HashMap<>();
 
     public Map<String, AppConfiguration> getApps() {
         return Collections.unmodifiableMap(this.apps);
@@ -165,11 +170,19 @@ public class CommonProperties implements InitializingBean {
         this.authEnvs = authEnvs;
     }
 
-    public Map<String, String> getServiceRoot() {
-        return serviceRoot;
+    public Map<String, String> getServiceRoots() {
+        return serviceRoots;
     }
 
-    public void setServiceRoot(Map<String, String> serviceRoot) {
-        this.serviceRoot = serviceRoot;
+    public void setServiceRoots(Map<String, String> serviceRoots) {
+        this.serviceRoots = serviceRoots;
+    }
+
+    public Map<String, String> getAppServiceNames() {
+        return appServiceNames;
+    }
+
+    public void setAppServiceNames(Map<String, String> appServiceNames) {
+        this.appServiceNames = appServiceNames;
     }
 }

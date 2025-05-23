@@ -1,5 +1,6 @@
 package org.panda.tech.core.rpc.client;
 
+import org.panda.tech.core.rpc.annotation.RpcClient;
 import org.panda.tech.core.rpc.constant.enums.CommMode;
 import org.panda.tech.core.rpc.serializer.RpcSerializer;
 import org.springframework.http.HttpMethod;
@@ -27,7 +28,7 @@ public interface RpcClientReq {
      *             如果执行过程中出现错误
      */
     <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType,
-                 Class<?>[] subTypes) throws Exception;
+                 Class<?>[] subTypes, RpcClient rpcClient) throws Exception;
 
     /**
      * 设置通信模式
@@ -41,5 +42,4 @@ public interface RpcClientReq {
      * 设置URL根路径
      */
     void setServerUrlRoot(String serverUrlRoot);
-
 }

@@ -1,10 +1,15 @@
 package org.panda.tech.core.rpc.client;
 
+import org.apache.commons.lang3.StringUtils;
 import org.panda.bamboo.common.constant.basic.Strings;
+import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.jackson.JsonUtil;
 import org.panda.tech.core.crypto.aes.AesEncryptor;
 import org.panda.tech.core.crypto.sha.ShaEncryptor;
+import org.panda.tech.core.rpc.annotation.RpcClient;
 import org.panda.tech.core.rpc.constant.RpcConstants;
+import org.panda.tech.core.rpc.constant.exception.RpcInvokerException;
+import org.panda.tech.core.util.http.client.RestTemplateClient;
 import org.panda.tech.core.web.restful.RestfulResult;
 import org.panda.tech.data.model.query.Paged;
 import org.panda.tech.data.model.query.QueryResult;
@@ -12,6 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.lang.reflect.Parameter;
 import java.util.HashMap;
@@ -97,7 +103,15 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClientR
     @SuppressWarnings("unchecked")
     @Override
     public <T> T invoke(HttpMethod method, String path, Parameter[] parameters, Object[] args, Class<T> resultType,
-                        Class<?>[] subTypes) throws Exception {
+                        Class<?>[] subTypes, RpcClient rpcClient) throws Exception {
+        String urlRoot = this.serverUrlRoot;
+        if (StringUtils.isEmpty(urlRoot)) { // 根路径为空校验
+            throw new RpcInvokerException(RpcConstants.EXC_RPC_ILLEGAL_ROOT);
+        }
+        // 内部请求资源预检查
+        if (rpcClient.internal() && !reqPreCheck(urlRoot)) {
+            throw new RpcInvokerException(String.format(RpcConstants.EXC_RPC_NO_SERVICE, urlRoot));
+        }
         Map<String, Object> rpcParams = getInvokeParams(parameters, args);
         Map<String, Object> params = (Map<String, Object>) rpcParams.get(RPC_KEY_PARAMS);
         Map<String, String> headers = (Map<String, String>) rpcParams.get(RPC_KEY_HEADERS);
@@ -122,4 +136,14 @@ public class RpcClientInvoker extends ClientRequestSupport implements RpcClientR
         return (T) this.serializer.deserializeBean(response, resultType, subTypes.length > 0 ? subTypes[0] : null);
     }
 
+    private boolean reqPreCheck(String urlRoot) {
+        try {
+            return RestTemplateClient.requestByGet(urlRoot + "/home") != null;
+        } catch (ResourceAccessException e) { // 资源连接失败异常
+            LogUtil.error(getClass(), e);
+            return false;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

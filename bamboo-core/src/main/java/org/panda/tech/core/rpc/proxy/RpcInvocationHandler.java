@@ -25,11 +25,12 @@ public class RpcInvocationHandler extends DelegateInvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        if (interceptor != null) {
-            this.interceptor.beforeInvoke(beanId, method, args);
+        boolean isIntercept = interceptor != null && "invoke".equals(method.getName());
+        if (isIntercept) {
+            this.interceptor.beforeInvoke(proxy, beanId, method, args);
         }
         Object result = super.invoke(proxy, method, args);
-        if (interceptor != null) {
+        if (isIntercept) {
             this.interceptor.afterInvoke(beanId, method, args, result);
         }
         return result;

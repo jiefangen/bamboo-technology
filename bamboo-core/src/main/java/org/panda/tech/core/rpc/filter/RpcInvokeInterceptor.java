@@ -18,7 +18,7 @@ public interface RpcInvokeInterceptor {
      * @throws Exception
      *             如果调用过程中出现错误
      */
-    void beforeInvoke(String beanId, Method method, Object[] args) throws Exception;
+    void beforeInvoke(Object proxy, String beanId, Method method, Object[] args) throws Exception;
 
     /**
      * 在执行指定RPC方法后调用

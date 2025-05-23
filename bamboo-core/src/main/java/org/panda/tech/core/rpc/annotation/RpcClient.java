@@ -29,6 +29,11 @@ public @interface RpcClient {
     String beanId() default Strings.EMPTY;
 
     /**
+     * @return 服务名称
+     */
+    String serviceName() default Strings.EMPTY;
+
+    /**
      * @return 是否是内部调用
      */
     boolean internal() default true;
