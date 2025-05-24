@@ -5,10 +5,12 @@ import org.panda.tech.core.rpc.filter.RpcInvokeInterceptor;
 
 import java.lang.reflect.Method;
 
+/**
+ * RpcInvokeInterceptor初始化顺序会影响RpcClientProcessor初始化bean过滤
+ */
 public class RpcInvocationHandler extends DelegateInvocationHandler {
 
     private RpcInvokeInterceptor interceptor;
-
     private String beanId;
 
     public RpcInvocationHandler(Object target) {

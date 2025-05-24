@@ -2,6 +2,7 @@ package org.panda.tech.core.rpc.proxy;
 
 import org.apache.commons.lang3.StringUtils;
 import org.panda.bamboo.common.constant.basic.Strings;
+import org.panda.bamboo.common.tools.DelegateInvocationHandler;
 import org.panda.bamboo.common.util.clazz.BeanUtil;
 import org.panda.bamboo.common.util.lang.StringUtil;
 import org.panda.tech.core.config.CommonProperties;
@@ -11,11 +12,9 @@ import org.panda.tech.core.rpc.annotation.RpcEnv;
 import org.panda.tech.core.rpc.aop.RpcClientAspect;
 import org.panda.tech.core.rpc.client.RpcClientInvoker;
 import org.panda.tech.core.rpc.client.RpcClientReq;
-import org.panda.tech.core.rpc.filter.RpcInvokeInterceptor;
 import org.panda.tech.core.rpc.serializer.JsonRpcSerializer;
 import org.panda.tech.core.rpc.serializer.RpcSerializer;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Import;
@@ -30,17 +29,13 @@ import java.util.Map;
  **/
 @Import({JsonRpcSerializer.class, RpcClientAspect.class})
 public class RpcClientProcessor implements BeanPostProcessor {
-
     // RPC代理客户端容器
     private final Map<String, RpcClientReq> rpcProxyClients = new HashMap<>();
 
-    @Autowired(required = false)
-    private RpcInvokeInterceptor interceptor;
-    @Value(AppConstants.EL_SPRING_PROFILES_ACTIVE)
-    private String env;
-
     private final CommonProperties commonProperties;
     private final RpcSerializer rpcSerializer;
+    @Value(AppConstants.EL_SPRING_PROFILES_ACTIVE)
+    private String env;
 
     public RpcClientProcessor(RpcSerializer rpcSerializer, CommonProperties commonProperties) {
         this.rpcSerializer = rpcSerializer;
@@ -81,10 +76,7 @@ public class RpcClientProcessor implements BeanPostProcessor {
                 serviceRoots.put(beanId, urlRoot);
                 rpcClientInvoker.setServerUrlRoot(urlRoot);
             }
-            RpcInvocationHandler rpcInvocationHandler = new RpcInvocationHandler(rpcClientInvoker);
-            rpcInvocationHandler.setInterceptor(this.interceptor);
-            rpcInvocationHandler.setBeanId(beanId);
-            RpcClientReq targetProxy = BeanUtil.createProxy(rpcClientInvoker, rpcInvocationHandler);
+            RpcClientReq targetProxy = BeanUtil.createProxy(rpcClientInvoker, new DelegateInvocationHandler(rpcClientInvoker));
             if (!rpcProxyClients.containsKey(beanId)) {
                 rpcProxyClients.put(beanId, targetProxy);
             }
