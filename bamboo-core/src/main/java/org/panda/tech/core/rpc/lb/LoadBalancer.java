@@ -6,6 +6,5 @@ import java.util.List;
  * 负载均衡器
  */
 public interface LoadBalancer<T> {
-    T select();
-    void updateNodes(List<T> nodes);
+    T select(List<T> newNodes);
 }

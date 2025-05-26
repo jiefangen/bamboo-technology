@@ -13,12 +13,9 @@ public class RoundRobinLoadBalancer<T> implements LoadBalancer<T> {
     private final AtomicInteger index = new AtomicInteger(0);
     private volatile List<T> nodes = Collections.emptyList();
 
-    public RoundRobinLoadBalancer(List<T> nodes) {
-        updateNodes(nodes);
-    }
-
     @Override
-    public T select() {
+    public T select(List<T> newNodes) {
+        this.updateNodes(newNodes);
         List<T> currentNodes = this.nodes;
         if (currentNodes.isEmpty()) {
             return null;
@@ -27,8 +24,7 @@ public class RoundRobinLoadBalancer<T> implements LoadBalancer<T> {
         return currentNodes.get(currentIndex % currentNodes.size());
     }
 
-    @Override
-    public void updateNodes(List<T> newNodes) {
+    private void updateNodes(List<T> newNodes) {
         if (newNodes == null) {
             this.nodes = Collections.emptyList();
         } else {
