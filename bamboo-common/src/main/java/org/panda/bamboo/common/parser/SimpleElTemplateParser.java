@@ -66,8 +66,7 @@ public class SimpleElTemplateParser implements TemplateParser {
     @Override
     public String parse(File templateFile, Map<String, Object> params, Locale locale)
             throws IOException {
-        String templateContent = IOUtils.toString(new FileInputStream(templateFile),
-                Strings.ENCODING_UTF8);
+        String templateContent = IOUtils.toString(new FileInputStream(templateFile), Strings.ENCODING_UTF8);
         return parse(templateContent, params, locale);
     }
 

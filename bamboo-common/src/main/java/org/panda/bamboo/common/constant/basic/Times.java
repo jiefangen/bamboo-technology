@@ -49,6 +49,10 @@ public class Times {
      */
     public static final String GMT_PATTERN = "EEE, dd MMM yyyy HH:mm:ss 'GMT'";
     /**
+     * 没分隔符长短日期格式
+     */
+    public static final String SHORT_DATE_NO_DELIMITER_PATTERN = "yyyyMMdd";
+    /**
      * 毫秒级单位
      */
     public static final long MS_ONE_SECOND = 1000L;

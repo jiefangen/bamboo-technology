@@ -2,6 +2,7 @@ package org.panda.bamboo.common.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  * 日志组件工具类
@@ -87,4 +88,7 @@ public class LogUtil {
         }
     }
 
+    public static String format(String template, Object... args) {
+        return MessageFormatter.arrayFormat(template, args).getMessage();
+    }
 }
