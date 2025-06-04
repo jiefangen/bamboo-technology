@@ -33,6 +33,10 @@ public class SpringUtil {
         return isActiveProfile(context.getEnvironment(), profile);
     }
 
+    public static String getProperty(ApplicationContext context, String property) {
+        return context.getEnvironment().getProperty(property);
+    }
+
     /**
      * 从Spring容器中获取指定名称的bean
      *

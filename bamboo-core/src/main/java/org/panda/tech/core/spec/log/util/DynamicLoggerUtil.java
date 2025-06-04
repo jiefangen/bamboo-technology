@@ -6,8 +6,8 @@ import org.panda.bamboo.common.constant.basic.Strings;
 import org.panda.bamboo.common.constant.basic.Times;
 import org.panda.bamboo.common.util.LogUtil;
 import org.panda.bamboo.common.util.date.TemporalUtil;
-import org.panda.tech.core.spec.log.trace.TraceIdInterceptor;
-import org.slf4j.MDC;
+import org.panda.bamboo.core.context.SpringContextHolder;
+import org.panda.tech.core.spec.log.trace.TraceContext;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -40,15 +40,17 @@ public class DynamicLoggerUtil {
      * @param args 内容参数
      */
     public static void writerContent(String name, String template, Object... args) {
-        if (StringUtils.isEmpty(name)) {
-            name = "info";
+        String enable = SpringContextHolder.getProperty("logging.dynamic.enable");
+        if (StringUtils.isEmpty(enable) || !"true".equals(enable)) {
+            return;
         }
         try {
-            File file = getLogFile(name);
+            File file = getLogFile(StringUtils.isEmpty(name) ? "info" : name);
             FileWriter writer = new FileWriter(file, true);
-            String traceId = MDC.get(TraceIdInterceptor.TRACE_ID);
+            String traceId = TraceContext.getTraceId();
             if (StringUtils.isEmpty(traceId)) {
-                traceId = "system";
+                Thread currentThread = Thread.currentThread();
+                traceId = currentThread.getName() + ":" + currentThread.getId();
             }
             String content = TemporalUtil.formatLong(Instant.now()) + " |-DYNAMIC  ["+ traceId + "] "
                     + LogUtil.format(template, args) + System.lineSeparator();

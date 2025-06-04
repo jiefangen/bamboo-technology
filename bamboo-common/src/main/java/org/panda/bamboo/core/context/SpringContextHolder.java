@@ -24,6 +24,10 @@ public class SpringContextHolder implements ApplicationContextAware {
         return SpringUtil.getBeanByDefaultName(applicationContext, type);
     }
 
+    public static String getProperty(String property) {
+        return SpringUtil.getProperty(applicationContext, property);
+    }
+
     public static String getActiveProfile() {
         return SpringUtil.getActiveProfile(applicationContext);
     }
@@ -35,5 +39,4 @@ public class SpringContextHolder implements ApplicationContextAware {
     public static ApplicationContext getApplicationContext() {
         return applicationContext;
     }
-
 }
