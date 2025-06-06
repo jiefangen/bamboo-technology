@@ -20,7 +20,7 @@ import java.time.Instant;
  * @author fangen
  * @since 2025/5/30
  **/
-public class DynamicLoggerUtil {
+public class DynamicLogUtil {
     /**
      * 动态日志写入内容
      *
@@ -57,7 +57,7 @@ public class DynamicLoggerUtil {
             IOUtils.write(content, writer);
             writer.close();
         } catch (IOException e) {
-            LogUtil.error(DynamicLoggerUtil.class, e);
+            LogUtil.error(DynamicLogUtil.class, e);
         }
     }
 
