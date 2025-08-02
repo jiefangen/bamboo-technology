@@ -10,6 +10,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -110,7 +111,7 @@ public class EncryptUtil {
     public static String encryptByAes(String source, String key) {
         try {
             // 对密钥进行处理
-            byte[] keyBytes = key.getBytes(Strings.ENCODING_UTF8);
+            byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
             byte[] paddedKeyBytes = new byte[16];
             int keyLength = keyBytes.length;
             if (keyLength > 16) {
@@ -123,7 +124,7 @@ public class EncryptUtil {
             IvParameterSpec ivSpec = new IvParameterSpec(paddedKeyBytes);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
             // 进行加密
-            byte[] encrypted = cipher.doFinal(source.getBytes(Strings.ENCODING_UTF8));
+            byte[] encrypted = cipher.doFinal(source.getBytes(StandardCharsets.UTF_8));
             // 对结果进行base64编码并返回
             return Base64.getEncoder().encodeToString(encrypted);
         } catch (Exception e) {
@@ -135,7 +136,7 @@ public class EncryptUtil {
     public static String decryptByAes(String encryptedText, String key) {
         try {
             // 对密钥进行处理
-            byte[] keyBytes = key.getBytes(Strings.ENCODING_UTF8);
+            byte[] keyBytes = key.getBytes(StandardCharsets.UTF_8);
             byte[] paddedKeyBytes = new byte[16];
             int keyLength = keyBytes.length;
             if (keyLength > 16) {
@@ -150,7 +151,7 @@ public class EncryptUtil {
             // 对数据进行base64解码并进行解密
             byte[] decrypted = cipher.doFinal(Base64.getDecoder().decode(encryptedText));
             // 返回解密结果
-            return new String(decrypted, Strings.ENCODING_UTF8);
+            return new String(decrypted, StandardCharsets.UTF_8);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
