@@ -61,4 +61,7 @@ public class RestTemplateClient {
         return request(HttpMethod.POST, url, null, bodyParams, headers);
     }
 
+    public static Object requestByGetObj(String url) {
+        return restTemplate.getForObject(url, Object.class);
+    }
 }
