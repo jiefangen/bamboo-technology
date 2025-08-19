@@ -41,8 +41,6 @@
         <bamboo-core.version>2.3.0</bamboo-core.version>
 
         <spring-boot.version>2.6.13</spring-boot.version>
-
-        <!-- 当前技术框架依赖的JDK版本 -->
         <oracle-jdk.version>11</oracle-jdk.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
