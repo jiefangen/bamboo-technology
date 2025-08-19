@@ -5,12 +5,12 @@
     <parent>
         <artifactId>bamboo-technology</artifactId>
         <groupId>org.panda.tech</groupId>
-        <version>1.0.RELEASE</version>
+        <version>2.0.RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>bamboo-data-mybatis</artifactId>
-    <version>${technology.version}</version>
+    <version>${bamboo-technology.version}</version>
 
     <properties>
         <druid-spring.version>1.2.16</druid-spring.version>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.panda.tech</groupId>
             <artifactId>bamboo-data</artifactId>
-            <version>${technology.version}</version>
+            <version>${bamboo-technology.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

@@ -5,12 +5,12 @@
     <parent>
         <artifactId>bamboo-technology</artifactId>
         <groupId>org.panda.tech</groupId>
-        <version>1.0.RELEASE</version>
+        <version>2.0.RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>bamboo-security-shiro</artifactId>
-    <version>${technology.version}</version>
+    <version>${bamboo-technology.version}</version>
 
     <properties>
         <shiro-spring-boot.version>1.9.0</shiro-spring-boot.version>
