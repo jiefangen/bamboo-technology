@@ -1,5 +1,9 @@
 ## bamboo-technology（技术框架基础支撑层）
 
+### 🚨 项目迁移通知
+本项目已不再在 GitHub 更新维护，最新版本请移步至 **Gitee** 👉 [https://gitee.com/bamboo-me/bamboo-technology](https://gitee.com/bamboo-me/bamboo-technology)<br>
+推荐使用**Gitee**地址：👉 [https://gitee.com/bamboo-me/bamboo-technology](https://gitee.com/bamboo-me/bamboo-technology)，国内访问更快。
+
 ### 技术框架模块简介
 #### 1、bamboo-common（通用模块-为本技术框架提供支持）
     1、标准工具解析异常常量等设计规范
